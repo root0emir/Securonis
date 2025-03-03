@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Support Securonis by visiting our GitHub page:"
+echo "Support Securonis by visiting our GitHub page:" 
 echo "➡ https://github.com/root0emir/Securonis"
 
 # Open the GitHub page in the default web browser (if available)
