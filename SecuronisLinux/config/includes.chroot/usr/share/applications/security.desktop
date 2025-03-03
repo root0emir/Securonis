@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Security Scan
+Comment=Malware,rootkit scanning tool
+Exec=mate-terminal -- bash -c "/usr/local/bin/security; exec bash"
+Icon=/usr/share/icons/securonis/icon6.png
+Terminal=true
+Type=Application
+Categories=Securonis;Securonis;

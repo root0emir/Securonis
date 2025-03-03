@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=System Manager
+Comment=System manager for Securonis Linux
+Exec=mate-terminal -- bash -c "/usr/local/bin/system-manager; exec bash"
+Icon=/usr/share/icons/securonis/icon7.png
+Terminal=true
+Type=Application
+Categories=Securonis;Securonis;

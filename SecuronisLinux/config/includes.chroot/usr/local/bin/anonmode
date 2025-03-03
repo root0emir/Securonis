@@ -1,0 +1,53 @@
+#!/bin/bash
+
+echo -e "\e[1;32m
+
+
+  _________                                        .__        
+ /   _____/ ____   ____  __ _________  ____   ____ |__| ______
+ \_____  \_/ __ \_/ ___\|  |  \_  __ \/  _ \ /    \|  |/  ___/
+ /        \  ___/\  \___|  |  /|  | \(  <_> )   |  \  |\___ \ 
+/_______  /\___  >\___  >____/ |__|   \____/|___|  /__/____  >
+        \/     \/     \/                         \/        \/ 
+
+
+\e[0m"
+
+echo -e "\e[1;33m
+==========================================================
+This tool configures Securonis Linux to maximize online 
+anonymity and privacy using the Tor network. It implements 
+various measures to prevent data leaks, such as terminating 
+potentially risky processes, changing the MAC address, and 
+updating IP configurations.
+
+Note: Carefully review this tool before use. Ensure that you 
+operate within legal boundaries and adhere to ethical guidelines. 
+Always comply with local laws and regulations.
+==========================================================
+\e[0m"
+
+echo ""
+echo -e "\e[1;34mWelcome to Securonis Anonymous Mode\e[0m"
+echo ""
+echo "Select an option:"
+echo "1. Start Anonymous Mode"
+echo "2. Stop Anonymous Mode"
+echo "3. Status of Anonymous Mode"
+echo -n "Enter your choice [1-3]: "
+read choice
+
+case $choice in
+  1)
+    sudo /usr/sbin/anonymous start
+    ;;
+  2)
+    sudo /usr/sbin/anonymous stop
+    ;;
+  3)
+    sudo /usr/sbin/anonymous status
+    ;;
+  *)
+    echo -e "\e[1;31mInvalid choice! Please choose 1, 2, or 3.\e[0m"
+    ;;
+esac

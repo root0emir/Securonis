@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# About Securonis Linux
+
+cat << EOF
+Securonis Linux is a Debian Trixie-based operating system designed for daily use with a focus on privacy and security. With Securonis Anonymous Mode, all internet traffic is routed through the Tor network, and additional settings are available to prevent potential leaks. Additionally, the MAC address can be changed, and various anonymity features are available.
+
+Securonis offers various additional features and scripts tailored to meet user needs. To discover these tools, you can type 'commands' in the terminal. If you encounter any issues or need assistance, you can type 'help' in the terminal.
+
+If you wish to support the project, you can type 'donate' in the terminal to contribute. The project needs both financial and technical support. Your contributions will help improve the project and provide a more secure internet experience.
+
+Always be cautious to protect your digital security. Do not share your personal information on any platform and avoid suspicious activities. The Securonis Linux Developers do not accept any responsibility for the use of the software; use it at your own risk. Avoid engaging in unethical activities.
+
+Have a good day and enjoy safe internet usage.
+
+EOF

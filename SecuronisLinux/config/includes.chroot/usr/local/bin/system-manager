@@ -1,0 +1,169 @@
+#!/bin/bash
+
+# ASCII Art
+cat << "EOF"
+
+  ____  _____ ____ _   _ ____   ___  _   _ ___ ____  
+ / ___|| ____/ ___| | | |  _ \ / _ \| \ | |_ _/ ___| 
+ \___ \|  _|| |   | | | | |_) | | | |  \| || |\___ \ 
+  ___) | |__| |___| |_| |  _ <| |_| | |\  || | ___) |
+ |____/|_____\____|\___/|_|_\_\\___/|_| \_|___|____/ 
+ | |   |_ _| \ | | | | \ \/ /                        
+ | |    | ||  \| | | | |\  /                         
+ | |___ | || |\  | |_| |/  \                         
+ |_____|___|_| \_|\___//_/\_\                        
+                                                     
+                                                                                                          
+EOF
+
+echo "------------------"
+echo "\"Have a nice day!\""
+echo "------------------"
+echo "1) Update the System"
+echo "2) System Information"
+echo "3) Disk Information"
+echo "4) Internet Test"
+echo "5) List Installed Packages"
+echo "6) Show Memory Usage"
+echo "7) Show CPU Information"
+echo "8) List Network Connections"
+echo "9) Clear Cache"
+echo "10) Check Drivers"
+echo "11) Sound Settings"
+echo "-------------------------"
+echo "12) Securonis Linux Website"
+echo "13) Securonis Linux Github"
+echo "14) About"
+echo "15) Help"
+echo "16) Exit"
+echo ""
+
+LOG_FILE="securonis_linux_tool.log"
+
+# Function to log messages
+log_message() {
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - $1" | tee -a $LOG_FILE
+}
+
+# Function to install necessary tools
+function install_tool() {
+    tool=$1
+    if ! command -v $tool &> /dev/null; then
+        log_message "Installing $tool..."
+        sudo apt update && sudo apt install -y $tool
+        if [ $? -ne 0 ]; then
+            log_message "Error installing $tool."
+            exit 1
+        fi
+    else
+        log_message "$tool is already installed."
+    fi
+}
+
+# Taking selection from the main menu
+read -p "Please enter a choice: " choice
+
+case $choice in
+  1)
+    log_message "Starting System Update..."
+    sudo apt update && sudo apt upgrade -y
+    if [ $? -ne 0 ]; then
+        log_message "System update failed."
+        exit 1
+    fi
+    log_message "System update completed successfully."
+    ;;
+  2)
+    log_message "Fetching System Information..."
+    # Fetching OS information from /etc/os-release
+    if [ -f /etc/os-release ]; then
+      echo -n "OS: "
+      grep '^PRETTY_NAME=' /etc/os-release | cut -d= -f2 | tr -d \"
+    else
+      log_message "/etc/os-release file not found."
+    fi
+    echo -n "Kernel: "
+    uname -r
+    log_message "System Information fetched successfully."
+    ;;
+  3)
+    log_message "Fetching Disk Information..."
+    df -h
+    log_message "Disk Information fetched successfully."
+    ;;
+  4)
+    log_message "Performing Internet Test..."
+    if ping -c 4 google.com > /dev/null 2>&1; then
+      log_message "Network connection is active."
+    else
+      log_message "Network connection failed."
+    fi
+    ;;
+  5)
+    log_message "Listing Installed Packages..."
+    dpkg -l
+    log_message "Installed Packages listed successfully."
+    ;;
+  6)
+    log_message "Fetching Memory Usage..."
+    free -h
+    log_message "Memory Usage fetched successfully."
+    ;;
+  7)
+    log_message "Fetching CPU Information..."
+    install_tool lscpu
+    lscpu
+    log_message "CPU Information fetched successfully."
+    ;;
+  8)
+    log_message "Listing Network Connections..."
+    if command -v ip > /dev/null 2>&1; then
+      ip a
+    else
+      install_tool net-tools
+      ifconfig
+    fi
+    log_message "Network Connections listed successfully."
+    ;;
+  9)
+    log_message "Clearing Cache..."
+    sudo sync; sudo echo 3 | sudo tee /proc/sys/vm/drop_caches
+    log_message "Cache cleared successfully."
+    ;;
+  10)
+    log_message "Checking Drivers..."
+    install_tool lshw
+    sudo lshw -C display
+    log_message "Drivers checked successfully."
+    ;;
+  11)
+    log_message "Accessing Sound Settings..."
+    install_tool alsa-utils
+    alsamixer
+    log_message "Sound settings accessed."
+    ;;
+  12)
+    log_message "Opening Securonis Linux Website..."
+    xdg-open "https://root0emir.github.io/securonislinux/" 2>/dev/null || log_message "Unable to open web browser."
+    ;;
+  13)
+    log_message "Opening Securonis Linux Github page..."
+    xdg-open "https://github.com/root0emir/Securonis" 2>/dev/null || log_message "Unable to open web browser."
+    ;;
+  14)
+    log_message "Displaying About information..."
+    echo "For information about Securonis Linux, type 'about' in the terminal."
+    ;;
+  15)
+    log_message "Displaying Help information..."
+    echo "For help with Securonis Linux, type 'help' in the terminal."
+    ;;
+  16)
+    log_message "Exiting..."
+    exit 0
+    ;;
+  *)
+    log_message "Invalid option selected."
+    echo "Invalid option."
+    ;;
+esac

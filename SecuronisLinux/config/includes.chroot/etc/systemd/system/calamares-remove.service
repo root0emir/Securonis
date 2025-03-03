@@ -1,0 +1,11 @@
+[Unit]
+Description=Remove Calamares Desktop Entry
+After=multi-user.target
+ConditionPathExists=/usr/share/applications/calamares.desktop
+
+[Service]
+Type=oneshot
+ExecStart=/bin/rm -f /usr/share/applications/calamares.desktop
+
+[Install]
+WantedBy=multi-user.target

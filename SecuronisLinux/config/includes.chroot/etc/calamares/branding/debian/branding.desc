@@ -1,0 +1,39 @@
+---
+componentName:   debian
+welcomeStyleCalamares: true
+welcomeExpandingLogo: true
+windowExpanding: normal
+windowSize: 800px,580px
+windowPlacement: center
+
+strings:
+    productName:         Securonis 
+    shortProductName:    Securonis
+    version:             1
+    shortVersion:        1
+    versionedName:       Securonis Linux
+    shortVersionedName:  Securonis
+    bootloaderEntryName: Securonis
+    productUrl:          https://debian.org
+    supportUrl:          https://www.debian.org/support
+    knownIssuesUrl:      https://bugs.debian.org
+    releaseNotesUrl:     https://www.debian.org/releases/bookworm/releasenotes
+    donateUrl:           https://www.debian.org
+
+sidebar: widget
+navigation: widget
+
+images:
+    productLogo:         "logo.png"
+    productIcon:         "logo.png"
+    productWelcome:      "welcom.png"
+
+slideshow:               "show.qml"
+
+style:
+   SidebarBackground:    "#808080"
+   SidebarText:          "#FFFFFF"
+   SidebarTextCurrent:   "#fbfbfb"
+   SidebarBackgroundCurrent: "#265370"
+
+slideshowAPI: 2

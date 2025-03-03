@@ -1,0 +1,7 @@
+PRETTY_NAME="Securonis Linux"
+NAME="Securonis"
+ID=debian
+ID_LIKE=debian
+VERSION="0.8 (Test)"
+VERSION_ID="0.8"
+

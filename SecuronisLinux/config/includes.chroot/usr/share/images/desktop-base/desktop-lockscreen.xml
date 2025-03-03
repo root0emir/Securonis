@@ -1,0 +1,12 @@
+<background>
+  <static>
+    <duration>8640000.0</duration>
+    <file>
+      <size width="1280" height="720">/usr/share/desktop-base/wp1.png</size>
+      <size width="1280" height="1024">/usr/share/desktop-base/wp1.png</size>
+      <size width="1920" height="1080">/usr/share/desktop-base/wp1.png</size>
+      <size width="1920" height="1200">/usr/share/desktop-base/wp1.png</size>
+      <size width="3840" height="2160">/usr/share/desktop-base/wp1.png</size>
+    </file>
+  </static>
+</background>

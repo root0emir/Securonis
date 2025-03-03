@@ -1,0 +1,11 @@
+network-manager
+network-manager-gnome
+wireguard-tools
+openvpn
+vpnc
+tor
+torsocks
+proxychains
+privoxy
+dnscrypt-proxy
+

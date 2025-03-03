@@ -1,0 +1,17 @@
+mate-desktop-environment-core
+mate-terminal
+pluma
+caja
+marco
+mate-polkit
+mate-session-manager
+mate-power-manager
+mate-notification-daemon
+mate-control-center
+network-manager-gnome
+lightdm
+lightdm-gtk-greeter
+pulseaudio
+pavucontrol
+alsa-utils
+
