@@ -1,7 +1,7 @@
 # Securonis
 ![github](https://github.com/user-attachments/assets/7ff9d0eb-43c3-44ce-99d8-7d04f27feec7)
 
-# Securonis Linux - Privacy and Security Focused Debian Trixie Based Distribution
+# Securonis Linux - Privacy and Security Focused Debian Based Distribution
 
 # Announcement: Due to the instability of Debian Trixie and the resulting package issues, I am rebuilding Securonis Linux from scratch based on Debian Bookworm (stable).
 
