@@ -3,6 +3,8 @@
 
 # Securonis Linux - Privacy and Security Focused Debian Trixie Based Distribution
 
+# Announcement: Due to package corruption issues in Debian Trixie, I decided to rebuild Securonisi stable from scratch.
+
 Securonis is a privacy and security-focused Linux distribution based on Debian Trixie. Securonis works both in live mode, leaving no trace, and also includes the Calamares installer, which helps users install it to a fixed disk. With the **Anonymous Mode** tool, Securonis forces all incoming and outgoing traffic to route through the Tor network. Additionally, this tool minimizes identity leakage risks with several additional features. IPv6 is disabled, the MAC address can be changed, and traffic routing can be started or stopped with a single command.
 
 ## Some Frequently Asked Questions
