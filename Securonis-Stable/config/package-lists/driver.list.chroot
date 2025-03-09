@@ -1,11 +1,3 @@
-grub-efi-amd64-bin
-grub-efi-amd64
-grub-efi-amd64-signed
-shim-helpers-amd64-signed
-mokutil
-shim-unsigned
-shim-signed-common
-shim-signed
 xorg
 xinit
 xinput
