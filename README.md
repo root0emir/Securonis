@@ -1,5 +1,7 @@
 # Securonis
-![github](https://github.com/user-attachments/assets/7ff9d0eb-43c3-44ce-99d8-7d04f27feec7)
+
+![sec](https://github.com/user-attachments/assets/bcbf9490-829a-4592-9c3a-a2aafa491471)
+
 
 # Securonis Linux 
 
