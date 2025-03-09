@@ -10,6 +10,7 @@ xorg
 xinit
 xinput
 xserver-xorg
+x11-xserver-utils
 xserver-xorg-input-all
 xserver-xorg-input-wacom
 xserver-xorg-input-elographics
