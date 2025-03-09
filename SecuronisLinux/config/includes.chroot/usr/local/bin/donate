@@ -1,9 +1,0 @@
-#!/bin/bash
-
-echo "Support Securonis by visiting our GitHub page:" 
-echo "➡ https://github.com/root0emir/Securonis"
-
-# Open the GitHub page in the default web browser (if available)
-xdg-open "https://github.com/root0emir/Securonis" 2>/dev/null || \
-open "https://github.com/root0emir/Securonis" 2>/dev/null || \
-echo "Please visit: https://github.com/root0emir/Securonis"
