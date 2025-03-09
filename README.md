@@ -12,6 +12,6 @@ Securonis is a privacy and security-focused Linux distribution based on Debian. 
 
 Securonis offers powerful traffic routing features and includes a tool that prevents identity leakage. Additionally, it provides simple but effective scripts for a password manager, an encrypted note-taking application, system management tools for everyday tasks, and **USBToolkit** to manage your flash drives. It also includes the **Nuke2System** script, which safely wipes the system and leaves no trace in emergency situations. Compared to other privacy and security-focused systems, Securonis is designed specifically for everyday use and does not require complex, rigid configurations. It provides above-average privacy and security for daily use without a doubt.
 
-## Conclusion
 
-I wish you safe and secure internet browsing!
+![Securonis](https://github.com/user-attachments/assets/05b268e6-faa2-4551-ac79-c70957db19c8)
+![Securonis2](https://github.com/user-attachments/assets/b7ae9bd4-971d-4e84-8349-42fa1da14eb3)
