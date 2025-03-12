@@ -3,7 +3,7 @@
 ![sec](https://github.com/user-attachments/assets/bcbf9490-829a-4592-9c3a-a2aafa491471)
 
 
-# Securonis Linux 
+# Securonis Linux 1.8 Beta 
 
 ![Ekran görüntüsü 2025-03-12 235011](https://github.com/user-attachments/assets/83b6a394-c199-44b4-8f69-d4301d9ce797)
 
