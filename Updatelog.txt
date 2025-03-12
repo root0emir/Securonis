@@ -1,0 +1,50 @@
+Securonis Linux 1
+
+Tests were conducted.
+Scripts were written.
+Privacy Mode was tested.
+Securonis Linux 1.1
+
+Additional customizations and automation tools were added.
+
+
+Securonis Linux 1.2
+
+Fixed the issue where Calamares remained on the desktop.
+Resolved the Nvidia driver issue; switched to the open-source Nvidia driver.
+
+
+Securonis Linux 1.3
+
+Tests were conducted.
+
+
+Securonis Linux 1.4
+
+Additional scripts and bug fixes.
+
+
+Securonis Linux 1.5
+
+Bug fixes.
+
+
+Securonis Linux 1.6
+
+Additional customizations and bug fixes.
+
+
+Securonis Linux 1.7
+
+Bug fixes and tests.
+
+
+Securonis Linux 1.8
+
+Fixed script errors.
+Changed the default wallpaper.
+Strengthened Privacy Mode further and made some bug fixes.
+Rebuilt the system from scratch based on Trixie.
+Known Issues:
+
+Calamares Package Manager 100 - I'm working on this issue and will fix it as soon as possible.
