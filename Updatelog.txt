@@ -45,6 +45,6 @@ Fixed script errors.
 Changed the default wallpaper.
 Strengthened Privacy Mode further and made some bug fixes.
 Rebuilt the system from scratch based on Trixie.
-Known Issues:
 
+Known Issues:
 Calamares Package Manager 100 - I'm working on this issue and will fix it as soon as possible.
