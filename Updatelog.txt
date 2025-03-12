@@ -1,4 +1,4 @@
-Securonis Linux 1
+Securonis Linux 1.0
 
 Tests were conducted.
 Scripts were written.
