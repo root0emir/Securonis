@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# echo "[+] Enabling automatic updates..."
+
+# Install unattended-upgrades if not already installed
+# apt-get install unattended-upgrades -y
+
+# Enable automatic updates for security patches
+# dpkg-reconfigure -plow unattended-upgrades
+
+# echo "[+] Automatic updates for security patches are now enabled."

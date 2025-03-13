@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# echo "[+] Securonis Kernel Hardening is Starting..."
+
+# Kernel-level security settings
+# cat <<EOF > /etc/sysctl.d/99-securonis-hardening.conf
+# # IPv4 Network Security
+# net.ipv4.conf.all.rp_filter = 1  # Enable reverse path filtering
+# net.ipv4.conf.default.rp_filter = 1
+# net.ipv4.conf.all.accept_source_route = 0  # Disable source routing
+# net.ipv4.conf.default.accept_source_route = 0
+# net.ipv4.conf.all.accept_redirects = 0  # Disable ICMP redirects
+# net.ipv4.conf.default.accept_redirects = 0
+# net.ipv4.conf.all.log_martians = 1  # Log suspicious packets
+# net.ipv4.conf.default.log_martians = 1
+# net.ipv4.icmp_echo_ignore_broadcasts = 1  # Ignore ICMP broadcast requests
+# net.ipv4.icmp_ignore_bogus_error_responses = 1  # Ignore bogus ICMP errors
+# net.ipv4.tcp_syncookies = 1  # Enable SYN flood protection
+# net.ipv4.tcp_max_syn_backlog = 2048  # Increase SYN backlog size
+
+# # Disable IPv6 (Enable if needed)
+# net.ipv6.conf.all.disable_ipv6 = 1
+# net.ipv6.conf.default.disable_ipv6 = 1
+
+# # Memory Protection
+# kernel.randomize_va_space = 2  # Enable ASLR (Address Space Layout Randomization)
+# vm.mmap_min_addr = 65536       # Prevent mapping to low memory addresses
+
+# # Kernel Security
+# kernel.kptr_restrict = 2        # Hide kernel pointers
+# kernel.dmesg_restrict = 1       # Restrict dmesg access
+# kernel.unprivileged_bpf_disabled = 1  # Disable unprivileged BPF
+# kernel.yama.ptrace_scope = 2    # Restrict process tracing
+# fs.protected_hardlinks = 1      # Enable hardlink protection
+# fs.protected_symlinks = 1       # Enable symlink protection
+# EOF
+
+# Apply settings
+# sysctl --system
+
+# Restrict module loading
+# echo "install usb-storage /bin/false" >> /etc/modprobe.d/secure.conf
+# echo "install firewire-core /bin/false" >> /etc/modprobe.d/secure.conf
+# echo "install cramfs /bin/false" >> /etc/modprobe.d/secure.conf
+# echo "install freevxfs /bin/false" >> /etc/modprobe.d/secure.conf
+
+# echo "[+] Kernel Hardening Completed. Securonis is now more secure!"

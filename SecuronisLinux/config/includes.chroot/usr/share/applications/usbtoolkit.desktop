@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=USBTOOLKIT
+Comment=USB Toolkit analyzes USB health, manages formatting, and detects errors
+Exec=mate-terminal -- bash -c "/usr/local/bin/usbtoolkit; exec bash"
+Icon=/usr/share/icons/securonis/icon4.png
+Terminal=true
+Type=Application
+Categories=Securonis;Securonis;

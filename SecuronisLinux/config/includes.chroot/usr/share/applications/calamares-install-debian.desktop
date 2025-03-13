@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Install Securonis
+GenericName=Securonis Installer
+Exec=calamares-install-debian
+Comment=Calamares — Installer for Securonis
+Keywords=calamares;system;install;debian;installer
+Icon=/usr/share/icons/securonis/icon.png
+Terminal=false
+Categories=Qt;System;
+StartupWMClass=calamares
+StartupNotify=True

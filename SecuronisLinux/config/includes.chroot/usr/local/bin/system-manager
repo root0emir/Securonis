@@ -1,0 +1,153 @@
+#!/bin/bash
+
+# ASCII Art
+cat << "EOF"
+
+  ____  _____ ____ _   _ ____   ___  _   _ ___ ____  
+ / ___|| ____/ ___| | | |  _ \ / _ \| \ | |_ _/ ___| 
+ \___ \|  _|| |   | | | | |_) | | | |  \| || |\___ \ 
+  ___) | |__| |___| |_| |  _ <| |_| | |\  || | ___) |
+ |____/|_____\____|\___/|_|_\_\\___/|_| \_|___|____/ 
+ | |   |_ _| \ | | | | \ \/ /                        
+ | |    | ||  \| | | | |\  /                         
+ | |___ | || |\  | |_| |/  \                         
+ |_____|___|_| \_|\___//_/\_\                        
+                                                     
+                                                                                                          
+EOF
+
+echo "------------------"
+echo "\"Have a nice day!\""
+echo "------------------"
+echo "1) Update the System"
+echo "2) System Information"
+echo "3) Disk Information"
+echo "4) Internet Test"
+echo "5) List Installed Packages"
+echo "6) Show Memory Usage"
+echo "7) Show CPU Information"
+echo "8) List Network Connections"
+echo "9) Clear Cache"
+echo "10) Check Drivers"
+echo "11) Sound Settings"
+echo "-------------------------"
+echo "12) Securonis Linux Website"
+echo "13) Securonis Linux Github"
+echo "14) About"
+echo "15) Help"
+echo "16) Exit"
+echo ""
+
+# Function to install necessary tools
+function install_tool() {
+    tool=$1
+    if ! command -v $tool &> /dev/null; then
+        echo "Installing $tool..."
+        sudo apt update && sudo apt install -y $tool
+        if [ $? -ne 0 ]; then
+            echo "Error installing $tool."
+            exit 1
+        fi
+    else
+        echo "$tool is already installed."
+    fi
+}
+
+# Taking selection from the main menu
+read -p "Please enter a choice: " choice
+
+case $choice in
+  1)
+    echo "Starting System Update..."
+    sudo apt update && sudo apt upgrade -y
+    if [ $? -ne 0 ]; then
+        echo "System update failed."
+        exit 1
+    fi
+    echo "System update completed successfully."
+    ;;
+  2)
+    echo "Fetching System Information..."
+    # Fetching OS information from /etc/os-release
+    if [ -f /etc/os-release ]; then
+      echo -n "OS: "
+      grep '^PRETTY_NAME=' /etc/os-release | cut -d= -f2 | tr -d \"
+    else
+      echo "/etc/os-release file not found."
+    fi
+    echo -n "Kernel: "
+    uname -r
+    ;;
+  3)
+    echo "Fetching Disk Information..."
+    df -h
+    ;;
+  4)
+    echo "Performing Internet Test..."
+    if ping -c 4 google.com > /dev/null 2>&1; then
+      echo "Network connection is active."
+    else
+      echo "Network connection failed."
+    fi
+    ;;
+  5)
+    echo "Listing Installed Packages..."
+    dpkg -l
+    ;;
+  6)
+    echo "Fetching Memory Usage..."
+    free -h
+    ;;
+  7)
+    echo "Fetching CPU Information..."
+    install_tool lscpu
+    lscpu
+    ;;
+  8)
+    echo "Listing Network Connections..."
+    if command -v ip > /dev/null 2>&1; then
+      ip a
+    else
+      install_tool net-tools
+      ifconfig
+    fi
+    ;;
+  9)
+    echo "Clearing Cache..."
+    sudo sync; sudo echo 3 | sudo tee /proc/sys/vm/drop_caches
+    echo "Cache cleared successfully."
+    ;;
+  10)
+    echo "Checking Drivers..."
+    install_tool lshw
+    sudo lshw -C display
+    ;;
+  11)
+    echo "Accessing Sound Settings..."
+    install_tool alsa-utils
+    alsamixer
+    ;;
+  12)
+    echo "Opening Securonis Linux Website..."
+    xdg-open "https://root0emir.github.io/securonislinux/" 2>/dev/null || echo "Unable to open web browser."
+    ;;
+  13)
+    echo "Opening Securonis Linux Github page..."
+    xdg-open "https://github.com/root0emir/Securonis" 2>/dev/null || echo "Unable to open web browser."
+    ;;
+  14)
+    echo "Displaying About information..."
+    echo "For information about Securonis Linux, type 'about' in the terminal."
+    ;;
+  15)
+    echo "Displaying Help information..."
+    echo "For help with Securonis Linux, type 'help' in the terminal."
+    ;;
+  16)
+    echo "Exiting..."
+    exit 0
+    ;;
+  *)
+    echo "Invalid option."
+    ;;
+esac

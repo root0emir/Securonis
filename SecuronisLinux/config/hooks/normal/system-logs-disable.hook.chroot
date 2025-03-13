@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# echo "[+] Disabling system logs for privacy..."
+
+# Stop and disable rsyslog
+# systemctl stop rsyslog
+# systemctl disable rsyslog
+# systemctl mask rsyslog
+
+# Stop and disable journald logging
+# systemctl stop systemd-journald
+# systemctl disable systemd-journald
+# systemctl mask systemd-journald
+
+# Make journal logs volatile (logs won't persist across reboots)
+# sed -i 's/#Storage=.*/Storage=volatile/' /etc/systemd/journald.conf
+# systemctl restart systemd-journald
+
+# Redirect logs to /dev/null
+# echo ":msg, contains, \"\" ~" > /etc/rsyslog.d/00-block-all.conf
+# echo "*.*  /dev/null" > /etc/rsyslog.d/00-null.conf
+
+# Stop and disable auditd (security event logging)
+# systemctl stop auditd
+# systemctl disable auditd
+# systemctl mask auditd
+
+# Nullify logrotate to prevent log archival
+# mv /etc/cron.daily/logrotate /etc/cron.daily/logrotate.disabled
+
+# echo "[+] System logs have been disabled. Privacy mode activated!"

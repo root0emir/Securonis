@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# echo "[+] Enabling SELinux..."
+
+# Install SELinux tools if not installed
+# apt-get install selinux-utils selinux-policy-default -y
+
+# Set SELinux to enforcing mode (strict security)
+# setenforce 1
+
+# Ensure SELinux is enabled at boot time
+# sed -i 's/^SELINUX=.*/SELINUX=enforcing/' /etc/selinux/config
+
+# echo "[+] SELinux is now enabled and enforcing."

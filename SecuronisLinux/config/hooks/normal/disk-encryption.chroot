@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# echo "[+] Setting up full disk encryption with LUKS..."
+
+# Install cryptsetup if not installed
+# apt-get install cryptsetup -y
+
+# Encrypt a disk (e.g., /dev/sda) using LUKS
+# cryptsetup luksFormat /dev/sda
+
+# Open the encrypted disk
+# cryptsetup luksOpen /dev/sda secure_disk
+
+# Format the encrypted disk
+# mkfs.ext4 /dev/mapper/secure_disk
+
+# Mount the encrypted disk
+# mount /dev/mapper/secure_disk /mnt/secure
+
+# echo "[+] Full disk encryption with LUKS has been configured."
+

@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# [+] Starting Firefox ESR security configuration...
+
+# Backup the Firefox ESR profile folder
+# cp -r /etc/firefox-esr /etc/firefox-esr-backup
+
+# Path to Firefox ESR Profile folder
+# FIREFOX_PROFILE_PATH="$HOME/.mozilla/firefox/*.default-release"
+
+# Enable secure browsing mode
+# Disable WebRTC (Web Real-Time Communication) to prevent IP address leakage
+# echo "[*] Disabling WebRTC..."
+# echo "media.peerconnection.enabled = false" >> "$FIREFOX_PROFILE_PATH/user.js"
+
+# Disable location tracking via geolocation API
+# echo "[*] Disabling geolocation tracking..."
+# echo "geo.enabled = false" >> "$FIREFOX_PROFILE_PATH/user.js"
+
+# Enable HTTPS Everywhere (force HTTPS connections)
+# echo "[*] Enabling HTTPS Everywhere..."
+# echo "security.mixed_content.block_display_content = true" >> "$FIREFOX_PROFILE_PATH/user.js"
+# echo "network.stricttransportsecurity.preloadlist = true" >> "$FIREFOX_PROFILE_PATH/user.js"
+
+# Block insecure (HTTP) content and ensure HTTPS
+# echo "[*] Blocking mixed content..."
+# echo "security.mixed_content.block_active_content = true" >> "$FIREFOX_PROFILE_PATH/user.js"
+
+# More strict cookie security
+# echo "[*] Enhancing cookie security..."
+# echo "network.cookie.cookieBehavior = 1" >> "$FIREFOX_PROFILE_PATH/user.js"  # Accept cookies only from secure sites
+# echo "network.cookie.lifetimePolicy = 2" >> "$FIREFOX_PROFILE_PATH/user.js"   # Disallow third-party cookies
+
+# Enable Tracking Protection
+# echo "[*] Enabling Tracking Protection..."
+# echo "privacy.trackingprotection.enabled = true" >> "$FIREFOX_PROFILE_PATH/user.js"
+# echo "privacy.trackingprotection.pbmode.enabled = true" >> "$FIREFOX_PROFILE_PATH/user.js"
+
+# Hide Referrer information for privacy
+# echo "[*] Hiding Referrer information..."
+# echo "network.http.sendRefererHeader = 0" >> "$FIREFOX_PROFILE_PATH/user.js"  # Do not send the Referrer header
+
+# Disable Flash and Java plugins (for better security)
+# echo "[*] Disabling Flash and Java..."
+# echo "plugin.state.flash = 0" >> "$FIREFOX_PROFILE_PATH/user.js"
+# echo "plugin.state.java = 0" >> "$FIREFOX_PROFILE_PATH/user.js"
+
+# Enable Malware and Phishing protection to block harmful websites
+# echo "[*] Enabling malware protection..."
+# echo "browser.safebrowsing.enabled = true" >> "$FIREFOX_PROFILE_PATH/user.js"
+# echo "browser.safebrowsing.malware.enabled = true" >> "$FIREFOX_PROFILE_PATH/user.js"
+# echo "browser.safebrowsing.phishing.enabled = true" >> "$FIREFOX_PROFILE_PATH/user.js"
+
+# Enable automatic updates to keep Firefox up to date with security patches
+# echo "[*] Enabling automatic updates..."
+# echo "app.update.auto = true" >> "$FIREFOX_PROFILE_PATH/user.js"
+# echo "app.update.enabled = true" >> "$FIREFOX_PROFILE_PATH/user.js"
+
+# Reload settings from the Firefox ESR Profile user.js file
+# echo "[+] Security settings applied successfully."
+
+# Restart Firefox for changes to take effect
+# systemctl restart firefox-esr
+
+# [+] Firefox ESR has been hardened for better security.

@@ -1,0 +1,123 @@
+#!/bin/bash
+
+# Warning: Changing these settings may make your digital fingerprint more identifiable.
+echo "WARNING: Changing these settings may make your digital fingerprint more identifiable."
+
+declare -A locales
+declare -A keymaps
+
+# 35 popular countries with language and keyboard settings
+locales=(
+    ["1"]="United States|en_US.UTF-8|us"
+    ["2"]="United Kingdom|en_GB.UTF-8|uk"
+    ["3"]="Germany|de_DE.UTF-8|de"
+    ["4"]="France|fr_FR.UTF-8|fr"
+    ["5"]="Spain|es_ES.UTF-8|es"
+    ["6"]="Italy|it_IT.UTF-8|it"
+    ["7"]="Netherlands|nl_NL.UTF-8|nl"
+    ["8"]="Belgium|nl_BE.UTF-8|be"
+    ["9"]="Switzerland|de_CH.UTF-8|ch"
+    ["10"]="Austria|de_AT.UTF-8|at"
+    ["11"]="Sweden|sv_SE.UTF-8|se"
+    ["12"]="Norway|no_NO.UTF-8|no"
+    ["13"]="Denmark|da_DK.UTF-8|dk"
+    ["14"]="Finland|fi_FI.UTF-8|fi"
+    ["15"]="Portugal|pt_PT.UTF-8|pt"
+    ["16"]="Russia|ru_RU.UTF-8|ru"
+    ["17"]="Poland|pl_PL.UTF-8|pl"
+    ["18"]="Czech Republic|cs_CZ.UTF-8|cz"
+    ["19"]="Hungary|hu_HU.UTF-8|hu"
+    ["20"]="Greece|el_GR.UTF-8|gr"
+    ["21"]="Turkey|tr_TR.UTF-8|tr"
+    ["22"]="China|zh_CN.UTF-8|cn"
+    ["23"]="Japan|ja_JP.UTF-8|jp"
+    ["24"]="South Korea|ko_KR.UTF-8|kr"
+    ["25"]="India|hi_IN.UTF-8|in"
+    ["26"]="Brazil|pt_BR.UTF-8|br"
+    ["27"]="Argentina|es_AR.UTF-8|ar"
+    ["28"]="Mexico|es_MX.UTF-8|mx"
+    ["29"]="Canada|en_CA.UTF-8|ca"
+    ["30"]="Australia|en_AU.UTF-8|au"
+    ["31"]="New Zealand|en_NZ.UTF-8|nz"
+    ["32"]="South Africa|en_ZA.UTF-8|za"
+    ["33"]="Saudi Arabia|ar_SA.UTF-8|sa"
+    ["34"]="United Arab Emirates|ar_AE.UTF-8|ae"
+    ["35"]="Israel|he_IL.UTF-8|il"
+)
+
+# Default language and keyboard settings
+default_locale="en_US.UTF-8"
+default_keymap="us"
+
+# Display country options
+echo "Please select your country (default: 1 - United States):"
+for i in "${!locales[@]}"; do
+    IFS='|' read -r country locale keymap <<< "${locales[$i]}"
+    echo "$i) $country"
+done
+
+read -p "Enter the number of your choice: " country_choice
+
+if [[ -z "$country_choice" ]]; then
+    locale=$default_locale
+    keymap=$default_keymap
+    country="United States"
+else
+    IFS='|' read -r country locale keymap <<< "${locales[$country_choice]}"
+fi
+
+echo "Selected country: $country"
+echo "Language setting: $locale"
+echo "Keyboard setting: $keymap"
+
+# Install necessary language packages
+sudo apt-get install -y locales
+sudo dpkg-reconfigure locales
+
+# Apply language settings
+echo "Applying settings..."
+sudo locale-gen $locale
+sudo update-locale LANG=$locale
+
+# Apply keyboard settings
+sudo localectl set-keymap $keymap
+
+# Display current locale and keyboard settings for verification
+echo "Current locale: $(locale)"
+echo "Current keyboard layout: $(localectl status)"
+
+# Timezone setting
+timezones=(
+    "1) Africa/Abidjan"
+    "2) Africa/Cairo"
+    "3) Africa/Johannesburg"
+    "4) America/New_York"
+    "5) America/Los_Angeles"
+    "6) America/Sao_Paulo"
+    "7) Asia/Shanghai"
+    "8) Asia/Tokyo"
+    "9) Asia/Istanbul"
+    "10) Europe/Berlin"
+    "11) Europe/London"
+    "12) Europe/Moscow"
+    "13) Pacific/Auckland"
+    "14) Australia/Sydney"
+)
+
+echo "Would you like to set your timezone? (yes/no)"
+read set_timezone
+if [[ "$set_timezone" == "yes" ]]; then
+    echo "Please select your timezone:"
+    for timezone in "${timezones[@]}"; do
+        echo "$timezone"
+    done
+    
+    read -p "Enter the number of your choice: " timezone_choice
+    timezone=${timezones[$timezone_choice - 1]}
+    timezone=${timezone##*) }
+    
+    sudo timedatectl set-timezone $timezone
+    echo "Timezone set to $timezone"
+fi
+
+echo "Settings have been successfully applied. Your system language and keyboard are set for $country."

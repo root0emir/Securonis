@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# update packages
+# apt-get update
+
+# calamares from backports
+# apt-get install -t bookworm-backports calamares -y
+

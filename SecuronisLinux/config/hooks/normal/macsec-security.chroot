@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# echo "[+] Enabling MACsec Encryption for Network Security..."
+
+# Install macsec-tools if not already installed
+# apt-get install macsec-tools -y
+
+# Enable MACsec on a specific network interface (replace eth0 with your network interface)
+# ip link set dev eth0 up
+# macsec -i eth0 add mka on
+
+# Configure MACsec encryption settings
+# macsec -i eth0 add on encrypt on cipher AES_GCM_128 key 0x<shared_key>
+
+# echo "[+] MACsec Encryption enabled on eth0 for secure network communication."

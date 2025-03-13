@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Script to display information about available tools
+
+echo "Available Tools and Their Descriptions:"
+echo "---------------------------------------"
+
+cat << EOF
+1. about: Displays information about the system and its components.
+2. anonmode: Enables anonymous mode to increase user privacy.
+3. antimitm: Detects and prevents MITM (Man-in-the-Middle) attacks.
+4. commands: Displays information about available tools (this script).
+5. donate: Provides information on how to support the project through donations.
+6. info: Displays help and usage information for all tools.
+7. livesettings: Allows changing language, keyboard layout, and time settings in live mode.
+8. netraffic: Monitors network traffic and provides usage statistics.
+9. notes: A simple note-taking tool for managing personal notes. Notes are encrypted and stored securely.
+10. nuke2system: Securely destroys the system, making all data unrecoverable.
+11. passmanager: A password manager for securely storing and managing passwords.
+12. security: Provides various security tools to enhance system protection.
+13. setresolution: Allows changing the screen resolution settings.
+14. symonitoring: System monitoring tool for checking system performance and health.
+15. system-manager: Manages system processes and services.
+16. usbtoolkit: Provides tools for managing and securing USB devices.
+
+EOF
+
+echo "For more detailed information about each tool, please refer to their specific help commands or documentation."

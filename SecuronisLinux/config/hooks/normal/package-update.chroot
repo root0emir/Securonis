@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+echo "APT sources"
+apt-get update
+
+echo "fixing broken packages"
+apt-get --fix-broken install -y
+
+# updating sources
+echo "update source"
+apt-get upgrade -y
