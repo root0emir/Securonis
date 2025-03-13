@@ -5,7 +5,9 @@
 
 # Securonis Linux 1.8 Beta 
 
-![Ekran görüntüsü 2025-03-12 235011](https://github.com/user-attachments/assets/83b6a394-c199-44b4-8f69-d4301d9ce797)
+![Ekran görüntüsü 2025-03-13 222814](https://github.com/user-attachments/assets/764afe6d-68ac-4ad6-9e0f-81aaf4dbd1a8)
+![Ekran görüntüsü 2025-03-13 222752](https://github.com/user-attachments/assets/8089896f-ecfb-4528-a714-f4d73f2530c9)
+
 
 
 # Announcement: "There is a bug preventing the system from being installed on a hard drive, and this issue is not caused by me. It is related to Calamares or live-build. I am in contact with the developers and will try to resolve this issue as soon as possible."
