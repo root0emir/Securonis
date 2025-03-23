@@ -48,3 +48,9 @@ Rebuilt the system from scratch based on Trixie.
 
 Known Issues:
 Calamares Package Manager 100 - I'm working on this issue and will fix it as soon as possible.
+
+Securonis Linux 1.9
+
+Fixed an issue where the desktop environment would not load after the system was installed
+
+
