@@ -3,6 +3,7 @@ Securonis Linux 1.0
 Tests were conducted.
 Scripts were written.
 Privacy Mode was tested.
+
 Securonis Linux 1.1
 
 Additional customizations and automation tools were added.
