@@ -1,1 +1,27 @@
+Securonis Linux is an open-source, Debian-based operating system designed with a focus on privacy, security, and anonymity to help users securely protect their digital identity and data on the internet. As internet security becomes increasingly important, Securonis Linux aims to provide users with a secure and anonymous browsing experience while protecting their online privacy.
 
+Securonis Linux is developed as a flexible and easy-to-use system equipped with powerful security tools. The system forces all internet traffic through the Tor network, aiming to minimize data leaks. Additionally, it provides users with a script to strengthen the Kernel and adjust the system according to their specific needs. These tools are optimized to ensure users can move freely in the digital world without compromising their privacy.
+
+Built using the Live-build tool, the system allows users to run the operating system from a USB drive or live media without installing it on any fixed disk or storage device. This is a significant advantage for users looking for a secure and portable working environment. Moreover, the system also supports installation on the hard drive via the Calamares installer, allowing users to permanently install the system on their computers.
+
+Purpose and Ethical Guidelines:
+Securonis Linux is developed primarily for users conscious about digital security and anonymity. The system aims to help users perform online activities privately and anonymize their online identity. However, Securonis Linux must only be used for legal and ethical purposes.
+
+This operating system is not designed for illegal activities, and such use is strictly prohibited. Users are obligated to use the software only within legal boundaries and ethical standards. Any use for illegal activities contradicts the purpose of this software and can result in serious legal consequences.
+
+Securonis Linux is developed solely for conscious, ethical users who prioritize privacy, security, and anonymity. Any misuse of the system is the sole responsibility of the user.
+
+Brand and Copyright:
+The name, brand, and all content related to the Securonis Linux project are the property of root0emir. Securonis Linux is open-source software and can be distributed and developed, but the brand name and all related copyrights are solely managed by root0emir. The code, content, or any components of the software cannot be used or distributed for commercial purposes and can only be used in compliance with the open-source license.
+
+The project is integrated with various open-source software and security tools to enhance users' digital security. However, to protect the Securonis brand and ensure the ethical use of the project, any commercial activity or use of the brand requires permission from root0emir.
+
+Development Purpose and Goals:
+My purpose in developing Securonis Linux is to raise awareness about digital security and privacy while providing a secure environment for users to protect their freedom, privacy, and security online. In an era where digital privacy is becoming increasingly valuable, the system I’ve created is designed not just as a software solution but also as a tool to educate and empower users about security, privacy, and anonymity.
+
+Securonis Linux offers users a strong security wall with features such as network security, encryption, tracking prevention, and anonymous browsing. Additionally, the system provides kernel-level security configurations and a robust configuration script, allowing users to tailor the system according to their specific needs.
+
+Technological Infrastructure:
+Securonis Linux is Debian-based and can be installed using the Calamares installer. The system regularly receives updates from the Debian repositories, ensuring that users are protected with the latest security patches. It is also integrated with anonymity providers like Tor and I2P, which helps conceal users' online identities while offering protection against malicious software.
+
+Tools like SELinux, keylogger prevention, and tracking prevention help secure users' data and online activities. By combining all these features, Securonis Linux provides users with a unique operating system that is privacy-focused, highly secure, and equipped with powerful protection mechanisms.
