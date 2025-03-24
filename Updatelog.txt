@@ -52,5 +52,9 @@ Calamares Package Manager 100 - I'm working on this issue and will fix it as soo
 Securonis Linux 1.9
 
 Fixed an issue where the desktop environment would not load after the system was installed
+!- Calamares package manager 100 error fixed
+Open source nvida drivers cause critical errors in the system, we are back to closed source drivers
+The system will no longer be trixie based by default. I decided to build it based on Bookworm. My goal was to provide stability and solve trixie related problems.
 
-
+Known Issues: 
+Nvidia Systemd Service Failed - I'm working on this issue and will fix it as soon as possible.
