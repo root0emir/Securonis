@@ -59,3 +59,11 @@ The system will no longer be trixie based by default. I decided to build it base
 
 Known Issues: 
 Nvidia Systemd Service Failed - I'm working on this issue and will fix it as soon as possible.
+
+Securonis Linux 1.9.1 
+
+Partially resolved the Nvidia systemd service error.
+
+The system was rebuilt based on trixie. The reason for this is that the dnscrypt-proxy package is not available in bookworm, I am working on the dns encryption feature. Also, the calamares interface is terrible and some of its features were not working.
+
+Minor Bugs: Firmware bug - It doesn't look visually appealing so I'll close this
