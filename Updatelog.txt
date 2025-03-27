@@ -71,3 +71,5 @@ Minor Bugs: Firmware bug - It doesn't look visually appealing so I'll close this
 Securonis Linux 2.0 - Beta 
 
 USBTOOLKIT has been updated and renamed to Quick-USBKit. More features and improvements have been added and some unnecessary features have been removed. 
+
+New Script - SecuronisDnsCrypt : A tool that makes it easy to encrypt DNS queries
