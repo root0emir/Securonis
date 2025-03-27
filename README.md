@@ -8,14 +8,21 @@
 ![Ekran görüntüsü 2025-03-13 222814](https://github.com/user-attachments/assets/764afe6d-68ac-4ad6-9e0f-81aaf4dbd1a8)
 ![Ekran görüntüsü 2025-03-13 222752](https://github.com/user-attachments/assets/8089896f-ecfb-4528-a714-f4d73f2530c9)
 
+# About
 
+Securonis Linux is a Debian Testing-based Linux distribution focused on privacy and security. Simplicity and minimalism are the core philosophy of Securonis. It comes with a special script that routes all internet traffic through the Tor network. Users can start traffic routing with a single click, encrypt DNS with a single click, and harden the kernel against attacks with a single click. Unlike other systems, mandatory traffic routing is not always enforced; users have the freedom to configure the system as they wish. However, everything is designed to be as simple as possible through automation.
 
-# Announcement: "There is a bug preventing the system from being installed on a hard drive, and this issue is not caused by me. It is related to Calamares or live-build. I am in contact with the developers and will try to resolve this issue as soon as possible."
+Securonis uses the MATE desktop environment, which provides a fast and lightweight experience. It features Panic Mode, allowing users to manage their system, monitor identity leaks, and check system status in emergency situations. Additionally, Paranoia Mode, located within Panic Mode, completely isolates the system from the outside world and enforces strict security rules.
 
-Securonis is a privacy and security-focused Linux distribution based on Debian. Securonis works both in live mode, leaving no trace, and also includes the Calamares installer, which helps users install it to a fixed disk. With the **Anonymous Mode** tool, Securonis forces all incoming and outgoing traffic to route through the Tor network. Additionally, this tool minimizes identity leakage risks with several additional features. IPv6 is disabled, the MAC address can be changed, and traffic routing can be started or stopped with a single command.
+Furthermore, Securonis includes essential security tools such as a secure note-taking app, password manager, secure browser, and USB security toolkit.
 
+Securonis Linux is fully open source. All tools are developed using Python and Shell to ensure they are as simple and minimal as possible, avoiding unnecessary complexity and bloat—I do not like unnecessary complexity and excess.
 
-Securonis offers powerful traffic routing features and includes a tool that prevents identity leakage. Additionally, it provides simple but effective scripts for a password manager, an encrypted note-taking application, system management tools for everyday tasks, and **USBToolkit** to manage your flash drives. It also includes the **Nuke2System** script, which safely wipes the system and leaves no trace in emergency situations. Compared to other privacy and security-focused systems, Securonis is designed specifically for everyday use and does not require complex, rigid configurations. It provides above-average privacy and security for daily use without a doubt.
+--------------
+
+Why I Created This
+
+My goal was to create a simple, minimal, fast, and secure Linux distribution. In today’s world, there isn’t a Linux distribution that can be installed on a hard drive and provides privacy and security for everyday use. Securonis does exactly that—it provides a secure system for daily use. You won’t be reliant on virtual machines or a flash drive, and you don’t have to use complex systems that constantly route Tor traffic. If you're looking for a secure browser and system experience, you're in the right place. Additionally, Securonis works in Live Mode, meaning you don’t have to install it—you can try it out or use it portably; it’s up to you. Designing Securonis was enjoyable, though quite challenging at times. I hope you enjoy using it!
 
 
 ![Securonis2](https://github.com/user-attachments/assets/b7ae9bd4-971d-4e84-8349-42fa1da14eb3)

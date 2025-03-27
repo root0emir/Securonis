@@ -3,6 +3,7 @@ Securonis Linux 1.0
 Tests were conducted.
 Scripts were written.
 Privacy Mode was tested.
+
 Securonis Linux 1.1
 
 Additional customizations and automation tools were added.
@@ -39,7 +40,7 @@ Securonis Linux 1.7
 Bug fixes and tests.
 
 
-Securonis Linux 1.8
+Securonis Linux 1.8 
 
 Fixed script errors.
 Changed the default wallpaper.
@@ -48,3 +49,27 @@ Rebuilt the system from scratch based on Trixie.
 
 Known Issues:
 Calamares Package Manager 100 - I'm working on this issue and will fix it as soon as possible.
+
+Securonis Linux 1.9
+
+Fixed an issue where the desktop environment would not load after the system was installed
+!- Calamares package manager 100 error fixed
+Open source nvida drivers cause critical errors in the system, we are back to closed source drivers
+The system will no longer be trixie based by default. I decided to build it based on Bookworm. My goal was to provide stability and solve trixie related problems.
+
+Known Issues: 
+Nvidia Systemd Service Failed - I'm working on this issue and will fix it as soon as possible.
+
+Securonis Linux 2.0 - Test
+
+Partially resolved the Nvidia systemd service error.
+
+The system was rebuilt based on trixie. The reason for this is that the dnscrypt-proxy package is not available in bookworm, I am working on the dns encryption feature. Also, the calamares interface is terrible and some of its features were not working.
+
+Minor Bugs: Firmware bug - It doesn't look visually appealing so I'll close this
+
+Securonis Linux 2.0 - Beta 
+
+USBTOOLKIT has been updated and renamed to Quick-USBKit. More features and improvements have been added and some unnecessary features have been removed. 
+
+New Script - SecuronisDnsCrypt : A tool that makes it easy to encrypt DNS queries
