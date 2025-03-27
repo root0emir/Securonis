@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Quick-USBKit
+Comment=Quick-USBKit is a versatile tool designed to simplify and streamline the management of USB devices on Linux systems.
+Exec=mate-terminal -- bash -c "/usr/local/bin/quick-usbkit; exec bash"
+Icon=/usr/share/icons/securonis/icon4.png
+Terminal=true
+Type=Application
+Categories=Securonis;Securonis;

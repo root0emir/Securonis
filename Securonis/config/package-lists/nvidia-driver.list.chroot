@@ -1,0 +1,9 @@
+nvidia-driver
+nvidia-kernel-common
+nvidia-kernel-dkms
+nvidia-settings
+nvidia-xconfig
+nvidia-smi
+firmware-misc-nonfree
+nvidia-modprobe
+nvidia-persistenced

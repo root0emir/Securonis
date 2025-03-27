@@ -1,7 +1,0 @@
-PRETTY_NAME="Securonis Linux"
-NAME="Securonis"
-ID=debian
-ID_LIKE=debian
-VERSION="1.8"
-VERSION_ID="1.8"
-VERSION_CODENAME="arise"

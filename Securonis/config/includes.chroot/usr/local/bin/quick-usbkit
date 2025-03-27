@@ -1,0 +1,261 @@
+#!/bin/bash
+
+# Quick-USBKit Script
+# Author:root0emir
+# This script will list connected USB devices, perform USB formatting operations,
+# mount/unmount USB devices, show USB device information, backup/restore data, analyze disk usage,
+# show USB serial number, clone USB devices, encrypt/decrypt USB devices, delete specific file types,
+# and securely destroy USB data.
+
+# ASCII Art
+cat << "EOF"                  
+  ___        _      _         _   _ ____  ____  _  ___ _   
+ / _ \ _   _(_) ___| | __    | | | / ___|| __ )| |/ (_) |_ 
+| | | | | | | |/ __| |/ /____| | | \___ \|  _ \| ' /| | __|
+| |_| | |_| | | (__|   <_____| |_| |___) | |_) | . \| | |_ 
+ \__\_\\__,_|_|\___|_|\_\     \___/|____/|____/|_|\_\_|\__|
+
+EOF
+
+# List connected USB devices
+list_usb_devices() {
+    echo "Connected USB Devices:"
+    lsblk -o NAME,SIZE,VENDOR,MODEL,MOUNTPOINT | grep -i "sd"
+}
+
+# Show USB serial number
+show_usb_serial() {
+    read -p "Enter the name of the USB device (e.g., sdb): " usb_device
+    if [ -b "/dev/$usb_device" ]; then
+        udevadm info --query=all --name=/dev/$usb_device | grep ID_SERIAL
+    else
+        echo "Invalid USB device name!"
+    fi
+}
+
+# Clone USB device
+clone_usb_device() {
+    read -p "Enter the name of the source USB device (e.g., sdb): " source_device
+    read -p "Enter the name of the target USB device (e.g., sdc): " target_device
+    if [ -b "/dev/$source_device" ] && [ -b "/dev/$target_device" ]; then
+        sudo dd if=/dev/$source_device of=/dev/$target_device bs=4M status=progress
+        echo "USB device /dev/$source_device cloned to /dev/$target_device."
+    else
+        echo "Invalid USB device name!"
+    fi
+}
+
+# Encrypt USB device
+encrypt_usb_device() {
+    read -p "Enter the name of the USB device to encrypt (e.g., sdb): " usb_device
+    if [ -b "/dev/$usb_device" ]; then
+        sudo cryptsetup luksFormat /dev/$usb_device
+        sudo cryptsetup open /dev/$usb_device encrypted_usb
+        sudo mkfs.ext4 /dev/mapper/encrypted_usb
+        sudo cryptsetup close encrypted_usb
+        echo "USB device /dev/$usb_device encrypted successfully."
+    else
+        echo "Invalid USB device name!"
+    fi
+}
+
+# Decrypt USB device
+decrypt_usb_device() {
+    read -p "Enter the name of the USB device to decrypt (e.g., sdb): " usb_device
+    if [ -b "/dev/$usb_device" ]; then
+        sudo cryptsetup open /dev/$usb_device encrypted_usb
+        sudo mount /dev/mapper/encrypted_usb /mnt
+        echo "USB device /dev/$usb_device decrypted and mounted at /mnt."
+    else
+        echo "Invalid USB device name!"
+    fi
+}
+
+# Delete specific file types from USB
+delete_file_types() {
+    read -p "Enter the name of the USB device (e.g., sdb1): " usb_device
+    read -p "Enter the file type to delete (e.g., *.txt): " file_type
+    if [ -b "/dev/$usb_device" ]; then
+        sudo find /mnt -name "$file_type" -type f -exec rm -f {} \;
+        echo "All files of type $file_type deleted from /dev/$usb_device."
+    else
+        echo "Invalid USB device name!"
+    fi
+}
+
+# Format USB
+format_usb() {
+    read -p "Enter the name of the USB device to format (e.g., sdb): " usb_device
+    if [ -b "/dev/$usb_device" ]; then
+        echo "Formatting USB device /dev/$usb_device..."
+        read -p "All data will be lost! Do you want to continue? (y/n): " confirm
+        if [ "$confirm" == "y" ]; then
+            sudo mkfs.vfat -F 32 /dev/$usb_device
+            echo "USB device /dev/$usb_device formatted successfully."
+        else
+            echo "Formatting operation cancelled."
+        fi
+    else
+        echo "Invalid USB device name!"
+    fi
+}
+
+# Mount USB device
+mount_usb() {
+    read -p "Enter the name of the USB device to mount (e.g., sdb1): " usb_device
+    read -p "Enter the mount point directory (e.g., /mnt/usb): " mount_point
+    if [ -b "/dev/$usb_device" ]; then
+        sudo mount /dev/$usb_device $mount_point
+        echo "USB device /dev/$usb_device mounted at $mount_point."
+    else
+        echo "Invalid USB device name or mount point!"
+    fi
+}
+
+# Unmount USB device
+unmount_usb() {
+    read -p "Enter the name of the USB device to unmount (e.g., sdb1): " usb_device
+    if [ -b "/dev/$usb_device" ]; then
+        sudo umount /dev/$usb_device
+        echo "USB device /dev/$usb_device unmounted."
+    else
+        echo "Invalid USB device name!"
+    fi
+}
+
+# Show USB device information
+show_usb_info() {
+    read -p "Enter the name of the USB device to show information (e.g., sdb): " usb_device
+    if [ -b "/dev/$usb_device" ]; then
+        sudo lsblk -o NAME,FSTYPE,LABEL,UUID,MOUNTPOINT,SIZE,MODEL /dev/$usb_device
+    else
+        echo "Invalid USB device name!"
+    fi
+}
+
+# Backup data from USB
+backup_usb_data() {
+    read -p "Enter the name of the USB device to backup data (e.g., sdb1): " usb_device
+    read -p "Enter the backup destination directory (e.g., /backup): " backup_dir
+    if [ -b "/dev/$usb_device" ]; then
+        sudo rsync -a /mnt/$usb_device $backup_dir
+        echo "Data from /dev/$usb_device has been backed up to $backup_dir."
+    else
+        echo "Invalid USB device name or destination directory!"
+    fi
+}
+
+# Restore data to USB
+restore_usb_data() {
+    read -p "Enter the name of the USB device to restore data (e.g., sdb1): " usb_device
+    read -p "Enter the backup source directory (e.g., /backup): " backup_dir
+    if [ -b "/dev/$usb_device" ]; then
+        sudo rsync -a $backup_dir /mnt/$usb_device
+        echo "Data from $backup_dir has been restored to /dev/$usb_device."
+    else
+        echo "Invalid USB device name or source directory!"
+    fi
+}
+
+# Analyze disk usage
+analyze_disk_usage() {
+    read -p "Enter the name of the USB device to analyze disk usage (e.g., sdb1): " usb_device
+    if [ -b "/dev/$usb_device" ]; then
+        sudo df -h /dev/$usb_device
+    else
+        echo "Invalid USB device name!"
+    fi
+}
+
+# Securely destroy USB data
+securely_destroy_usb() {
+    read -p "Enter the name of the USB device to securely destroy (e.g., sdb): " usb_device
+    if [ -b "/dev/$usb_device" ]; then
+        echo "Warning: This operation will permanently erase all data on the USB device!"
+        echo "This action is irreversible and all data will be unrecoverable."
+        read -p "Are you sure you want to continue? (y/n): " confirm
+        if [ "$confirm" == "y" ]; then
+            sudo dd if=/dev/zero of=/dev/$usb_device bs=4M status=progress
+            sudo dd if=/dev/urandom of=/dev/$usb_device bs=4M status=progress
+            sudo dd if=/dev/zero of=/dev/$usb_device bs=4M status=progress
+            echo "USB device /dev/$usb_device securely destroyed."
+        else
+            echo "Secure destruction operation cancelled."
+        fi
+    else
+        echo "Invalid USB device name!"
+    fi
+}
+
+# Main menu
+while true; do
+    echo "Quick-USBKit"
+    echo "1. Show connected USB devices"
+    echo "2. Show USB serial number"
+    echo "3. Clone USB device"
+    echo "4. Encrypt USB device"
+    echo "5. Decrypt USB device"
+    echo "6. Delete specific file types from USB"
+    echo "7. Format USB"
+    echo "8. Mount USB device"
+    echo "9. Unmount USB device"
+    echo "10. Show USB device information"
+    echo "11. Backup data from USB"
+    echo "12. Restore data to USB"
+    echo "13. Analyze disk usage"
+    echo "14. Securely destroy USB data"
+    echo "15. Exit"
+    read -p "Select an option (1-15): " choice
+
+    case $choice in
+        1)
+            list_usb_devices
+            ;;
+        2)
+            show_usb_serial
+            ;;
+        3)
+            clone_usb_device
+            ;;
+        4)
+            encrypt_usb_device
+            ;;
+        5)
+            decrypt_usb_device
+            ;;
+        6)
+            delete_file_types
+            ;;
+        7)
+            format_usb
+            ;;
+        8)
+            mount_usb
+            ;;
+        9)
+            unmount_usb
+            ;;
+        10)
+            show_usb_info
+            ;;
+        11)
+            backup_usb_data
+            ;;
+        12)
+            restore_usb_data
+            ;;
+        13)
+            analyze_disk_usage
+            ;;
+        14)
+            securely_destroy_usb
+            ;;
+        15)
+            echo "Exiting..."
+            exit 0
+            ;;
+        *)
+            echo "Invalid selection! Please choose between 1-15."
+            ;;
+    esac
+done
