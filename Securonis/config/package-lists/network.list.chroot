@@ -8,3 +8,4 @@ torsocks
 proxychains
 privoxy
 dnscrypt-proxy
+isc-dhcp-client
