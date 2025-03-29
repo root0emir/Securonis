@@ -1,0 +1,190 @@
+#!/bin/bash
+
+# WARNING: THIS MODE WILL ISOLATE THE SYSTEM FROM THE OUTSIDE WORLD.
+# ALL CONNECTIONS WILL BE BLOCKED, AND THE KERNEL WILL BE SET TO THE HIGHEST SECURITY LEVEL.
+
+set -e
+
+# Function to check if Paranoia Mode is enabled
+is_paranoia_mode_enabled() {
+    if [ -f /etc/sysctl.d/99-paranoia-mode.conf ] && iptables -L INPUT | grep -q "DROP"; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Menu Function
+menu() {
+    echo -e "\e[31mWARNING: THIS MODE WILL ISOLATE THE SYSTEM FROM THE OUTSIDE WORLD. ALL CONNECTIONS WILL BE BLOCKED, AND THE KERNEL WILL BE SET TO THE HIGHEST SECURITY LEVEL.\e[0m"
+    echo -e "\e[32m[Securonis Linux - Paranoia Mode]\e[0m"
+    echo "1) Enable Paranoia Mode"
+    echo "2) Disable Paranoia Mode"
+    echo "3) Exit"
+}
+
+# Enable Paranoia Mode
+enable_paranoia_mode() {
+    echo "[+] Enabling Paranoia Mode..."
+
+    # Kernel-level security settings
+    cat <<EOF > /etc/sysctl.d/99-paranoia-mode.conf
+# IPv4 Network Security
+net.ipv4.conf.all.rp_filter = 1  # Enable reverse path filtering
+net.ipv4.conf.default.rp_filter = 1
+net.ipv4.conf.all.accept_source_route = 0  # Disable source routing
+net.ipv4.conf.default.accept_source_route = 0
+net.ipv4.conf.all.accept_redirects = 0  # Disable ICMP redirects
+net.ipv4.conf.default.accept_redirects = 0
+net.ipv4.conf.all.log_martians = 1  # Log suspicious packets
+net.ipv4.conf.default.log_martians = 1
+net.ipv4.icmp_echo_ignore_broadcasts = 1  # Ignore ICMP broadcast requests
+net.ipv4.icmp_ignore_bogus_error_responses = 1  # Ignore bogus ICMP errors
+net.ipv4.tcp_syncookies = 1  # Enable SYN flood protection
+net.ipv4.tcp_max_syn_backlog = 2048  # Increase SYN backlog size
+
+# Disable IPv6 (Enable if needed)
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+
+# Memory Protection
+kernel.randomize_va_space = 2  # Enable ASLR (Address Space Layout Randomization)
+vm.mmap_min_addr = 65536       # Prevent mapping to low memory addresses
+
+# Kernel Security
+kernel.kptr_restrict = 2        # Hide kernel pointers
+kernel.dmesg_restrict = 1       # Restrict dmesg access
+kernel.unprivileged_bpf_disabled = 1  # Disable unprivileged BPF
+kernel.yama.ptrace_scope = 2    # Restrict process tracing
+fs.protected_hardlinks = 1      # Enable hardlink protection
+fs.protected_symlinks = 1       # Enable symlink protection
+
+# Additional Security Settings
+kernel.exec-shield = 1          # Enable Exec Shield
+kernel.randomize_va_space = 2   # Full randomization of process address space
+kernel.panic = 10               # Reboot 10 seconds after kernel panic
+kernel.kexec_load_disabled = 1  # Disable kexec to prevent loading another kernel
+kernel.modules_disabled = 1     # Disable the loading of new kernel modules
+EOF
+
+    # Apply settings
+    sysctl --system
+
+    # Restrict module loading
+    cat <<EOF > /etc/modprobe.d/paranoia-mode.conf
+install usb-storage /bin/false
+install firewire-core /bin/false
+install cramfs /bin/false
+install freevxfs /bin/false
+install jffs2 /bin/false
+install hfs /bin/false
+install hfsplus /bin/false
+install squashfs /bin/false
+install udf /bin/false
+install dccp /bin/false
+install sctp /bin/false
+install rds /bin/false
+install tipc /bin/false
+EOF
+
+    # Block all incoming and outgoing network traffic
+    sudo iptables -P INPUT DROP
+    sudo iptables -P FORWARD DROP
+    sudo iptables -P OUTPUT DROP
+
+    # Block ICMP (ping requests)
+    sudo iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
+    sudo iptables -A OUTPUT -p icmp --icmp-type echo-reply -j DROP
+
+    # Save iptables rules
+    sudo iptables-save > /etc/iptables/rules.v4
+
+    # Disable system logs
+    sudo systemctl stop rsyslog
+    sudo systemctl disable rsyslog
+    sudo systemctl stop systemd-journald
+    sudo systemctl disable systemd-journald
+
+    # Clear existing logs
+    sudo rm -rf /var/log/*
+    sudo journalctl --vacuum-time=1s
+
+    # Disable unwanted services
+    sudo systemctl disable avahi-daemon
+    sudo systemctl stop avahi-daemon
+    sudo systemctl disable cups
+    sudo systemctl stop cups
+
+    # Disable cron jobs
+    sudo systemctl stop cron
+    sudo systemctl disable cron
+
+    echo "[✔] Paranoia Mode enabled. All network connections are blocked, system logs are disabled, and the system is secured to the highest level."
+}
+
+# Disable Paranoia Mode
+disable_paranoia_mode() {
+    if is_paranoia_mode_enabled; then
+        echo "[!] Disabling Paranoia Mode..."
+
+        # Flush all iptables rules
+        sudo iptables -F
+        sudo iptables -P INPUT ACCEPT
+        sudo iptables -P FORWARD ACCEPT
+        sudo iptables -P OUTPUT ACCEPT
+
+        # Remove saved iptables rules
+        sudo rm -f /etc/iptables/rules.v4
+
+        # Remove kernel hardening settings
+        sudo rm -f /etc/sysctl.d/99-paranoia-mode.conf
+        sudo rm -f /etc/modprobe.d/paranoia-mode.conf
+
+        # Apply default settings
+        sudo sysctl --system
+
+        # Enable system logs
+        sudo systemctl start rsyslog
+        sudo systemctl enable rsyslog
+        sudo systemctl start systemd-journald
+        sudo systemctl enable systemd-journald
+
+        # Enable cron jobs
+        sudo systemctl start cron
+        sudo systemctl enable cron
+
+        # Enable disabled services
+        sudo systemctl enable avahi-daemon
+        sudo systemctl start avahi-daemon
+        sudo systemctl enable cups
+        sudo systemctl start cups
+
+        echo "[✔] Paranoia Mode disabled. Network connections are restored, system logs are enabled, and kernel settings are reverted."
+    else
+        echo "[!] Paranoia Mode is not enabled."
+    fi
+}
+
+# Main Menu Loop
+while true; do
+    menu
+    read -p "Enter your choice: " choice
+
+    case $choice in
+        1)
+            if is_paranoia_mode_enabled; then
+                echo "[!] Paranoia Mode is already enabled. Please disable it first."
+            else
+                enable_paranoia_mode
+            fi
+            ;;
+        2)
+            disable_paranoia_mode
+            ;;
+        3) echo "Exiting..."; exit 0 ;;
+        *) echo "Invalid choice! Please select a valid option." ;;
+    esac
+
+    echo -e "\nPress any key to continue..."
+    read -n 1 -s -r
+done

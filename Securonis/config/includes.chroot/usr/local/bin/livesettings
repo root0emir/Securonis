@@ -4,7 +4,6 @@
 echo "WARNING: Changing these settings may make your digital fingerprint more identifiable."
 
 declare -A locales
-declare -A keymaps
 
 # 35 popular countries with language and keyboard settings
 locales=(
@@ -58,7 +57,7 @@ done
 
 read -p "Enter the number of your choice: " country_choice
 
-if [[ -z "$country_choice" ]]; then
+if [[ -z "$country_choice" || -z "${locales[$country_choice]}" ]]; then
     locale=$default_locale
     keymap=$default_keymap
     country="United States"
@@ -84,7 +83,7 @@ sudo localectl set-keymap $keymap
 
 # Display current locale and keyboard settings for verification
 echo "Current locale: $(locale)"
-echo "Current keyboard layout: $(localectl status)"
+echo "Current keyboard layout: $(localectl status | grep 'Keymap')"
 
 # Timezone setting
 timezones=(

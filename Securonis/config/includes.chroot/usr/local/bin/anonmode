@@ -23,27 +23,34 @@ Always comply with local laws and regulations.
 ==========================================================
 \e[0m"
 
-echo ""
-echo -e "\e[1;34mWelcome to Securonis Anonymous Mode\e[0m"
-echo ""
-echo "Select an option:"
-echo "1. Start Anonymous Mode"
-echo "2. Stop Anonymous Mode"
-echo "3. Status of Anonymous Mode"
-echo -n "Enter your choice [1-3]: "
-read choice
+while true; do
+  echo ""
+  echo -e "\e[1;34mWelcome to Securonis Anonymous Mode\e[0m"
+  echo ""
+  echo "Select an option:"
+  echo "1. Start Anonymous Mode"
+  echo "2. Stop Anonymous Mode"
+  echo "3. Status of Anonymous Mode"
+  echo "4. Exit"
+  echo -n "Enter your choice [1-4]: "
+  read choice
 
-case $choice in
-  1)
-    sudo /usr/sbin/anonymous start
-    ;;
-  2)
-    sudo /usr/sbin/anonymous stop
-    ;;
-  3)
-    sudo /usr/sbin/anonymous status
-    ;;
-  *)
-    echo -e "\e[1;31mInvalid choice! Please choose 1, 2, or 3.\e[0m"
-    ;;
-esac
+  case $choice in
+    1)
+      sudo /usr/sbin/anonymous start
+      ;;
+    2)
+      sudo /usr/sbin/anonymous stop
+      ;;
+    3)
+      sudo /usr/sbin/anonymous status
+      ;;
+    4)
+      echo "Exiting..."
+      exit 0
+      ;;
+    *)
+      echo -e "\e[1;31mInvalid choice! Please choose 1, 2, 3, or 4.\e[0m"
+      ;;
+  esac
+done

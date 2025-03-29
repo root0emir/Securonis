@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Function to display the description of each command
+display_scripts() {
+    echo "Available Scripts and Their Descriptions:"
+    echo
+    echo "about               - Displays information about Securonis Linux."
+    echo "anonmode            - Activates anonymous mode to protect your identity."
+    echo "antimitm            - Provides anti man-in-the-middle attack protections."
+    echo "scripts             - Lists all available scripts and their descriptions."
+    echo "controlpanel        - Opens the control panel for Securonis Linux."
+    echo "donate              - Provides information on how to donate to the Securonis project."
+    echo "info                - Displays system information."
+    echo "install-nvidia-driver - Installs the NVIDIA driver."
+    echo "livesettings        - Shows live system settings and configurations."
+    echo "netraffic           - Monitors network traffic."
+    echo "notes               - Opens the crypted notes application."
+    echo "nuke2system         - Completely wipes the system securely."
+    echo "panicmode           - Toolkit for protect security and privacy in emergency situations."
+    echo "paranoia            - Activates paranoia mode for heightened security."
+    echo "paranoiadeactivate  - Deactivates paranoia mode."
+    echo "passmanager         - Opens the password manager."
+    echo "quick-usbkit        - USB management tool."
+    echo "security            - Provides various security tools and options."
+    echo "securonisdnscrypt   - Activates DNSCrypt for secure DNS queries."
+    echo "symonitoring        - Monitors system for suspicious activities."
+    echo "system-manager      - Opens the system manager for Securonis Linux."
+    echo "systemhardening     - Applies system hardening settings."
+    echo "timespoof           - Spoofs system time for security purposes."
+}
+
+# Main function to handle the command
+main() {
+    display_scripts
+}
+
+# Execute the main function
+main

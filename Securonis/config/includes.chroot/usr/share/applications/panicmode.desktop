@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Panic Mode
+Comment=A toolkit to ensure and manage system security and privacy in emergency situations
+Exec=mate-terminal -- bash -c "/usr/local/bin/panicmode; exec bash"
+Icon=/usr/share/icons/securonis/icon12.png
+Terminal=true
+Type=Application
+Categories=Securonis;Securonis;

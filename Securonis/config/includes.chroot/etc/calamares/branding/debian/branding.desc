@@ -9,10 +9,10 @@ windowPlacement: center
 strings:
     productName:         Securonis Linux
     shortProductName:    Securonis
-    version:             1.8
-    shortVersion:        1.8
-    versionedName:       Securonis 1.8
-    shortVersionedName:  Securonis 1.8
+    version:             2.0
+    shortVersion:        2.0
+    versionedName:       Securonis 2.0
+    shortVersionedName:  Securonis 2.0
     bootloaderEntryName: Securonis
     productUrl:          https://debian.org
     supportUrl:          https://www.debian.org/support

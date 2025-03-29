@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Securonis Scripts
+Comment=Show all Securonis scripts
+Exec=mate-terminal -- bash -c "/usr/local/bin/scriptsdesc; exec bash"
+Icon=/usr/share/icons/securonis/icon9.png
+Terminal=true
+Type=Application
+Categories=Securonis;Securonis;

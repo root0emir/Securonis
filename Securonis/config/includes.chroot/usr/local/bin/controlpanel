@@ -1,0 +1,114 @@
+#!/bin/bash
+
+# Function to get system status
+get_system_status() {
+    echo "System Status:"
+    echo "-----------------------------"
+    echo "Hostname: $(hostname)"
+    echo "Uptime: $(uptime -p)"
+    echo "Operating System: $(lsb_release -d | cut -f2-)"
+    echo "Kernel Version: $(uname -r)"
+    echo "CPU Usage: $(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print 100 - $1"%"}')"
+    echo "Memory Usage: $(free -m | awk 'NR==2{printf "%.2f%% (%s/%s MB)\n", $3*100/$2, $3, $2}')"
+    echo "Disk Usage: $(df -h | awk '$NF=="/"{printf "%s (%s/%s)\n", $5, $3, $2}')"
+    echo "Logged In Users: $(who)"
+    echo "Last Boot Time: $(who -b | awk '{print $3, $4}')"
+    echo "Current Date and Time: $(date)"
+    echo "Load Average: $(uptime | awk -F'load average:' '{print $2}')"
+    echo "Running Processes: $(ps aux | wc -l)"
+    echo "Kernel Modules: $(lsmod | wc -l)"
+    echo
+}
+
+# Function to get network status
+get_network_status() {
+    echo "Network Status:"
+    echo "-----------------------------"
+    echo "IP Address: $(hostname -I | awk '{print $1}')"
+    echo "Gateway: $(ip route | grep default | awk '{print $3}')"
+    echo "DNS Servers: $(grep "nameserver" /etc/resolv.conf | awk '{print $2}' | xargs)"
+    echo "Active Connections: $(ss -tun | grep ESTAB | wc -l)"
+    echo "Public IP: $(curl -s ifconfig.me)"
+    echo "Network Interfaces:"
+    ip -brief address show
+    echo
+}
+
+# Function to check VPN status
+check_vpn_status() {
+    echo "VPN Status:"
+    echo "-----------------------------"
+    if ip a | grep -q "tun0"; then
+        echo "VPN is active."
+        echo "VPN Interface: tun0"
+        echo "VPN IP Address: $(ip -4 addr show tun0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')"
+    else
+        echo "VPN is not active."
+    fi
+    echo
+}
+
+# Function to check Tor connection status using Tor Project's check site
+check_tor_status() {
+    echo "Tor Connection Status:"
+    echo "-----------------------------"
+    if systemctl is-active --quiet tor; then
+        tor_check=$(curl -s https://check.torproject.org | grep -oP '(?<=<h1>)(.*)(?=<\/h1>)')
+        if [[ $tor_check == "Congratulations. This browser is configured to use Tor." ]]; then
+            echo "Tor is running and connected."
+            echo "Tor IP Address: $(curl -s https://check.torproject.org | grep -oP '(?<=Your IP address appears to be: )(.*)(?=<\/p>)')"
+        else
+            echo "Tor is running but not connected properly."
+        fi
+    else
+        echo "Tor is not running."
+    fi
+    echo
+}
+
+# Function to get MAC address
+get_mac_address() {
+    echo "MAC Address:"
+    echo "-----------------------------"
+    ip link show | grep link/ether | awk '{print $2}'
+    echo
+}
+
+# Function to get open ports and listening services
+get_open_ports() {
+    echo "Open Ports and Listening Services:"
+    echo "-----------------------------"
+    ss -tuln
+    echo
+}
+
+# Function to get firewall status and rules
+get_firewall_status() {
+    echo "Firewall Status and Rules:"
+    echo "-----------------------------"
+    sudo ufw status verbose
+    echo
+}
+
+# Function to get list of loaded kernel modules
+get_kernel_modules() {
+    echo "Loaded Kernel Modules:"
+    echo "-----------------------------"
+    lsmod
+    echo
+}
+
+# Main function to get all system information
+get_system_info() {
+    get_system_status
+    get_network_status
+    check_vpn_status
+    check_tor_status
+    get_mac_address
+    get_open_ports
+    get_firewall_status
+    get_kernel_modules
+}
+
+# Execute the main function
+get_system_info

@@ -1,0 +1,54 @@
+#!/bin/bash
+
+is_paranoia_mode_enabled() {
+    if [ -f /etc/sysctl.d/99-paranoia-mode.conf ] && iptables -L INPUT | grep -q "DROP"; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+disable_paranoia_mode() {
+    if $(is_paranoia_mode_enabled); then
+        echo "[!] Disabling Paranoia Mode..."
+
+        # Flush all iptables rules
+        sudo iptables -F
+        sudo iptables -P INPUT ACCEPT
+        sudo iptables -P FORWARD ACCEPT
+        sudo iptables -P OUTPUT ACCEPT
+
+        # Remove saved iptables rules
+        sudo rm -f /etc/iptables/rules.v4
+
+        # Remove kernel hardening settings
+        sudo rm -f /etc/sysctl.d/99-paranoia-mode.conf
+        sudo rm -f /etc/modprobe.d/paranoia-mode.conf
+
+        # Apply default settings
+        sudo sysctl --system
+
+        # Enable system logs
+        sudo systemctl start rsyslog
+        sudo systemctl enable rsyslog
+        sudo systemctl start systemd-journald
+        sudo systemctl enable systemd-journald
+
+        # Enable cron jobs
+        sudo systemctl start cron
+        sudo systemctl enable cron
+
+        # Enable disabled services
+        sudo systemctl enable avahi-daemon
+        sudo systemctl start avahi-daemon
+        sudo systemctl enable cups
+        sudo systemctl start cups
+
+        echo "[✔] Paranoia Mode disabled. Network connections are restored, system logs are enabled, and kernel settings are reverted."
+    else
+        echo "[!] Paranoia Mode is not enabled."
+    fi
+}
+
+# Test the function
+disable_paranoia_mode

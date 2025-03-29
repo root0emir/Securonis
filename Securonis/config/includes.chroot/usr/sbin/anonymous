@@ -2,7 +2,7 @@
 
 # Securonis Script for Enhanced Anonymity and Privacy
 # Configures Securonis Linux for maximum online anonymity using the Tor network.
-# Version: 1.0
+# Version: 1.2
 # Tor traffic router
 # Note: Always review the script and ensure you understand its functionality
 # before execution. Use it responsibly and adhere to local laws and regulations.
@@ -25,9 +25,6 @@ TO_KILL="chrome dropbox firefox pidgin skype thunderbird hexchat slack teams zoo
 # BleachBit cleaners
 BLEACHBIT_CLEANERS="bash.history system.cache system.clipboard system.custom system.recent_documents system.rotated_logs system.tmp system.trash"
 OVERWRITE="true"
-
-# Default hostname
-REAL_HOSTNAME="securonis"
 
 # Load default options if exists
 if [ -f /etc/default/securonis-anonymous ]; then
@@ -62,32 +59,6 @@ ask() {
 		N* | n* | O* | o*) return 1 ;;
 		esac
 	done
-}
-
-# Change the local hostname
-change_hostname() {
-	echo
-
-	CURRENT_HOSTNAME=$(hostname)
-	NEW_HOSTNAME=${1:-$(shuf -n 1 /usr/share/dict/words | sed -r 's/[^a-zA-Z]//g' | awk '{print tolower($0)}')}
-
-	sed -i 's/127.0.1.1.*/127.0.1.1\t'"$NEW_HOSTNAME"'/g' /etc/hosts
-
-	clean_dhcp
-
-	hostnamectl set-hostname "$NEW_HOSTNAME"
-
-	echo " Hostname changed to $NEW_HOSTNAME"
-
-	if [ -f "$HOME/.Xauthority" ]; then
-		su "$SUDO_USER" -c "xauth -n list | grep -v $CURRENT_HOSTNAME | cut -f1 -d\ | xargs -i xauth remove {}"
-		su "$SUDO_USER" -c "xauth add $(xauth -n list | tail -1 | sed 's/^.*\//'$NEW_HOSTNAME'\//g')"
-		echo " * X authority file updated"
-	fi
-
-	avahi-daemon --kill 2>/dev/null
-
-	echo " Hostname successfully set to $NEW_HOSTNAME"
 }
 
 # Check Tor configs
@@ -317,26 +288,6 @@ do_start() {
 		echo
 	fi
 
-	if ask "Do you want to change the local hostname? It will cause disconnection" Y; then
-		read -p "Type it or press Enter for a random one > " CHOICE
-
-		echo -n "\n * Stopping NetworkManager service"
-		systemctl stop NetworkManager 2>/dev/null
-		to_sleep
-
-		if [ "$CHOICE" = "" ]; then
-			change_hostname
-		else
-			change_hostname "$CHOICE"
-		fi
-
-		echo " * Starting NetworkManager service"
-		systemctl start NetworkManager 2>/dev/null
-		to_sleep
-	else
-		echo
-	fi
-
 	disable_ipv6
 
 	echo " * Restarting tor service"
@@ -376,24 +327,6 @@ do_stop() {
 		echo
 	fi
 
-	if ask "Do you want to change the local hostname? It will cause disconnection" Y; then
-		read -p "Type it or press Enter to restore default [$REAL_HOSTNAME] > " CHOICE
-
-		echo -n "\n * Stopping NetworkManager service"
-		systemctl stop NetworkManager 2>/dev/null
-		to_sleep
-
-		if [ "$CHOICE" = "" ]; then
-			change_hostname $REAL_HOSTNAME
-		else
-			change_hostname "$CHOICE"
-		fi
-
-		echo " * Starting NetworkManager service"
-		systemctl start NetworkManager 2>/dev/null
-		to_sleep
-	fi
-
 	if [ "$DISPLAY" ]; then
 		if ask "Delete unnecessary files to preserve your anonymity?" Y; then
 			run_bleachbit
@@ -419,9 +352,6 @@ do_status() {
 		echo "------------------------------------------------------"
 	fi
 
-	# Display hostname
-	CURRENT_HOSTNAME=$(hostname)
-	echo "Hostname          : $CURRENT_HOSTNAME"
 	echo "Public IP         : $IP"
 	echo "------------------------------------------------------"
 
@@ -440,8 +370,17 @@ do_status() {
 			echo "$mac_address | $interface"
 		fi
 	done
-	echo "------------------------------------------------------\n"
 
+	# Display routing table
+	echo "------------------------------------------------------"
+	echo "Routing Table:\n"
+	route -n
+	echo "------------------------------------------------------"
+
+	# Display active connections
+	echo "Active Connections:\n"
+	ss -tuln
+	echo "------------------------------------------------------\n"
 }
 
 case "$1" in

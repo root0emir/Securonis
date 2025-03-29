@@ -1,0 +1,167 @@
+#!/bin/bash
+
+# Securonis Linux - System and Kernel Hardening
+
+set -e
+
+# ASCII Art Function
+ascii_art() {
+    cat << "EOF"
+
+░█▀▀░█▀▀░█▀▀░█░█░█▀▄░█▀█░█▀█░▀█▀░█▀▀
+░▀▀█░█▀▀░█░░░█░█░█▀▄░█░█░█░█░░█░░▀▀█
+░▀▀▀░▀▀▀░▀▀▀░▀▀▀░▀░▀░▀▀▀░▀░▀░▀▀▀░▀▀▀
+░█▀▀░█░█░█▀▀░▀█▀░█▀▀░█▄█            
+░▀▀█░░█░░▀▀█░░█░░█▀▀░█░█            
+░▀▀▀░░▀░░▀▀▀░░▀░░▀▀▀░▀░▀            
+░█░█░█▀█░█▀▄░█▀▄░█▀▀░█▀█░▀█▀░█▀█░█▀▀
+░█▀█░█▀█░█▀▄░█░█░█▀▀░█░█░░█░░█░█░█░█
+░▀░▀░▀░▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀░▀░▀░▀▀▀
+ 
+EOF
+}
+
+# Menu Function
+menu() {
+    ascii_art
+    echo -e "\e[32m[Securonis Linux - System and Kernel Hardening]\e[0m"
+    echo "1) Enable System Hardening"
+    echo "2) Restore Default Kernel Settings"
+    echo "3) AppArmor Settings"
+    echo "4) SELinux Settings"
+    echo "5) Disable System Logs"
+    echo "6) Enable System Logs"
+    echo "7) Exit"
+}
+
+# Enable System Hardening
+enable_system_hardening() {
+    echo "[+] Kernel Hardening is Starting..."
+    echo "[*] This script developed by root0emir"
+
+    # Kernel-level security settings
+    cat <<EOF > /etc/sysctl.d/99-securonis-hardening.conf
+# IPv4 Network Security
+net.ipv4.conf.all.rp_filter = 1  # Enable reverse path filtering
+net.ipv4.conf.default.rp_filter = 1
+net.ipv4.conf.all.accept_source_route = 0  # Disable source routing
+net.ipv4.conf.default.accept_source_route = 0
+net.ipv4.conf.all.accept_redirects = 0  # Disable ICMP redirects
+net.ipv4.conf.default.accept_redirects = 0
+net.ipv4.conf.all.log_martians = 1  # Log suspicious packets
+net.ipv4.conf.default.log_martians = 1
+net.ipv4.icmp_echo_ignore_broadcasts = 1  # Ignore ICMP broadcast requests
+net.ipv4.icmp_ignore_bogus_error_responses = 1  # Ignore bogus ICMP errors
+net.ipv4.tcp_syncookies = 1  # Enable SYN flood protection
+net.ipv4.tcp_max_syn_backlog = 2048  # Increase SYN backlog size
+
+# Disable IPv6 (Enable if needed)
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+
+# Memory Protection
+kernel.randomize_va_space = 2  # Enable ASLR (Address Space Layout Randomization)
+vm.mmap_min_addr = 65536       # Prevent mapping to low memory addresses
+
+#  Kernel Security
+kernel.kptr_restrict = 2        # Hide kernel pointers
+kernel.dmesg_restrict = 1       # Restrict dmesg access
+kernel.unprivileged_bpf_disabled = 1  # Disable unprivileged BPF
+kernel.yama.ptrace_scope = 2    # Restrict process tracing
+fs.protected_hardlinks = 1      # Enable hardlink protection
+fs.protected_symlinks = 1       # Enable symlink protection
+EOF
+
+    # Apply settings
+    sysctl --system
+
+    # Restrict module loading
+    echo "install usb-storage /bin/false" >> /etc/modprobe.d/secure.conf
+    echo "install firewire-core /bin/false" >> /etc/modprobe.d/secure.conf
+    echo "install cramfs /bin/false" >> /etc/modprobe.d/secure.conf
+    echo "install freevxfs /bin/false" >> /etc/modprobe.d/secure.conf
+
+    echo "[+] Kernel Hardening Completed."
+}
+
+# Restore Default Kernel Settings
+restore_default_kernel_settings() {
+    echo "[!] Restoring default kernel settings..."
+    # Remove custom hardening settings
+    sudo rm -f /etc/sysctl.d/99-securonis-hardening.conf
+    sudo rm -f /etc/modprobe.d/secure.conf
+
+    # Apply default settings
+    sudo sysctl --system
+
+    echo "[✔] Default kernel settings have been restored!"
+}
+
+# AppArmor Settings
+apparmor_settings() {
+    echo "[+] Configuring AppArmor settings..."
+    sudo systemctl start apparmor
+    sudo systemctl enable apparmor
+    sudo aa-enforce /etc/apparmor.d/*
+
+    echo "[✔] AppArmor settings have been configured!"
+}
+
+# SELinux Settings
+selinux_settings() {
+    echo "[+] Configuring SELinux settings..."
+    if [ -f /etc/selinux/config ]; then
+        sudo setenforce 1
+        sudo sed -i 's/SELINUX=disabled/SELINUX=enforcing/' /etc/selinux/config
+    else
+        echo "SELinux is not installed!"
+    fi
+
+    echo "[✔] SELinux settings have been configured!"
+}
+
+# Disable System Logs
+disable_system_logs() {
+    echo "[!] Disabling system logs..."
+    sudo systemctl stop rsyslog
+    sudo systemctl disable rsyslog
+    sudo systemctl stop systemd-journald
+    sudo systemctl disable systemd-journald
+
+    # Clear existing logs
+    sudo rm -rf /var/log/*
+    sudo journalctl --vacuum-time=1s
+
+    echo "[✔] System logs have been disabled!"
+}
+
+# Enable System Logs
+enable_system_logs() {
+    echo "[+] Enabling system logs..."
+    sudo systemctl start rsyslog
+    sudo systemctl enable rsyslog
+    sudo systemctl start systemd-journald
+    sudo systemctl enable systemd-journald
+
+    echo "[✔] System logs have been enabled!"
+}
+
+# Main Menu Loop
+while true; do
+    menu
+    read -p "Enter your choice: " choice
+
+    case $choice in
+        1) enable_system_hardening ;;
+        2) restore_default_kernel_settings ;;
+        3) apparmor_settings ;;
+        4) selinux_settings ;;
+        5) disable_system_logs ;;
+        6) enable_system_logs ;;
+        7) echo "Exiting..."; exit 0 ;;
+        *) echo "Invalid choice! Please select a valid option.";;
+    esac
+
+    echo -e "\nPress any key to continue..."
+    read -n 1 -s -r
+done

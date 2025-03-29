@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Securonis DNSCrypt
+Comment=Encrypts DNS queries using DNSCrypt
+Exec=mate-terminal -- bash -c "/usr/local/bin/securonisdnscrypt; exec bash"
+Icon=/usr/share/icons/securonis/icon11.png
+Terminal=true
+Type=Application
+Categories=Securonis;Securonis;

@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# Warning: If you are in live mode and considering installing the system, be cautious as NVIDIA drivers may cause issues with the Calamares installer.
+echo "WARNING: If you are in live mode and considering installing the system, be cautious as NVIDIA drivers may cause issues with the Calamares installer."
+
+# Function to install open source NVIDIA drivers (Nouveau)
+install_open_source_drivers() {
+    echo "Installing open source NVIDIA drivers (Nouveau)..."
+    sudo apt update
+    sudo apt install -y xserver-xorg-video-nouveau
+    echo "Open source NVIDIA drivers (Nouveau) installed successfully."
+}
+
+# Function to install official NVIDIA drivers
+install_nvidia_drivers() {
+    echo "Installing official NVIDIA drivers..."
+    sudo apt update
+    sudo apt install -y nvidia-driver
+    echo "Official NVIDIA drivers installed successfully."
+}
+
+# Function to configure NVIDIA drivers
+configure_nvidia_drivers() {
+    echo "Configuring NVIDIA drivers..."
+    sudo nvidia-xconfig
+    echo "NVIDIA drivers configured successfully. Please reboot your system."
+}
+
+# Function to display the menu
+display_menu() {
+    echo "Please select an option:"
+    echo "1. Install open source NVIDIA drivers (Nouveau)"
+    echo "2. Install official NVIDIA drivers"
+    echo "3. Configure NVIDIA drivers"
+    echo "4. Exit"
+}
+
+while true; do
+    display_menu
+    read -p "Enter your choice [1-4]: " choice
+    case $choice in
+        1)
+            install_open_source_drivers
+            ;;
+        2)
+            install_nvidia_drivers
+            ;;
+        3)
+            configure_nvidia_drivers
+            ;;
+        4)
+            echo "Exiting..."
+            exit 0
+            ;;
+        *)
+            echo "Invalid choice. Please select a valid option."
+            ;;
+    esac
+done
