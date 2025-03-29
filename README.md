@@ -13,6 +13,8 @@ https://securonis.sourceforge.io
 
 # Securonis Linux 2.0 Test 
 
+![Ekran görüntüsü 2025-03-29 203510](https://github.com/user-attachments/assets/d73cc495-fa57-458d-a651-a92bff174ff6)
+
 ![Ekran görüntüsü 2025-03-29 001953](https://github.com/user-attachments/assets/42c62537-2693-41e5-9fac-72ac117d1b15)
 
 
