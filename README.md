@@ -2,11 +2,20 @@
 
 ![sec](https://github.com/user-attachments/assets/bcbf9490-829a-4592-9c3a-a2aafa491471)
 
+https://sourceforge.net/projects/securonis/
+
+https://securonis.sourceforge.io
 
 # Securonis Linux 1.8 Beta 
 
 ![Ekran görüntüsü 2025-03-13 222814](https://github.com/user-attachments/assets/764afe6d-68ac-4ad6-9e0f-81aaf4dbd1a8)
-![Ekran görüntüsü 2025-03-13 222752](https://github.com/user-attachments/assets/8089896f-ecfb-4528-a714-f4d73f2530c9)
+
+
+# Securonis Linux 2.0 Test 
+
+![Ekran görüntüsü 2025-03-29 001953](https://github.com/user-attachments/assets/42c62537-2693-41e5-9fac-72ac117d1b15)
+
+
 
 # About
 
