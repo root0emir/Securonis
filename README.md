@@ -21,7 +21,7 @@ https://securonis.sourceforge.io
 
 # About
 
-WARNING:Securonis Linux's anonymous mode routes all network traffic through a Tor transparent proxy. This forces all applications to operate over the Tor network, providing advanced privacy across the system. However, using Tor Browser with Tor transparent proxy may cause issues and is strongly discouraged. If you intend to use Tor Browser, it is recommended to use it independently over the Tor network to avoid conflicts.
+WARNING: Securonis Linux's anonymous mode routes all network traffic through a Tor transparent proxy. This forces all applications to operate over the Tor network, providing advanced privacy across the system. However, using Tor Browser with Tor transparent proxy may cause issues and is strongly discouraged. If you intend to use Tor Browser, it is recommended to use it independently over the Tor network to avoid conflicts.
 
 For better security and privacy, it is advised to avoid using Tor Browser with the transparent proxy mode.
 
