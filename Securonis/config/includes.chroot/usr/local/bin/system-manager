@@ -129,7 +129,7 @@ case $choice in
     ;;
   12)
     echo "Opening Securonis Linux Website..."
-    xdg-open "https://root0emir.github.io/securonislinux/" 2>/dev/null || echo "Unable to open web browser."
+    xdg-open "https://securonis.sourceforge.io" 2>/dev/null || echo "Unable to open web browser."
     ;;
   13)
     echo "Opening Securonis Linux Github page..."

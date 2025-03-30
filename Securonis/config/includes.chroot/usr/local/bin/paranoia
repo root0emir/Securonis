@@ -7,7 +7,7 @@ set -e
 
 # Function to check if Paranoia Mode is enabled
 is_paranoia_mode_enabled() {
-    if [ -f /etc/sysctl.d/99-paranoia-mode.conf ] && iptables -L INPUT | grep -q "DROP"; then
+    if [ -f /etc/sysctl.d/999-paranoia-mode.conf ] && iptables -L INPUT | grep -q "DROP"; then
         return 0
     else
         return 1
@@ -28,7 +28,7 @@ enable_paranoia_mode() {
     echo "[+] Enabling Paranoia Mode..."
 
     # Kernel-level security settings
-    cat <<EOF > /etc/sysctl.d/99-paranoia-mode.conf
+    cat <<EOF > /etc/sysctl.d/999-paranoia-mode.conf
 # IPv4 Network Security
 net.ipv4.conf.all.rp_filter = 1  # Enable reverse path filtering
 net.ipv4.conf.default.rp_filter = 1
@@ -137,7 +137,7 @@ disable_paranoia_mode() {
         sudo rm -f /etc/iptables/rules.v4
 
         # Remove kernel hardening settings
-        sudo rm -f /etc/sysctl.d/99-paranoia-mode.conf
+        sudo rm -f /etc/sysctl.d/999-paranoia-mode.conf
         sudo rm -f /etc/modprobe.d/paranoia-mode.conf
 
         # Apply default settings

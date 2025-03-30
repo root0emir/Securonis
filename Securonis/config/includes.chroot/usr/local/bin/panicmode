@@ -1,44 +1,61 @@
 #!/bin/bash
 
+# Securonis Linux Panic mode 
+# Developer: root0emir
+# Version 1.8 
 
+
+# check tor
 check_tor_status() {
     tor_check=$(curl -s https://check.torproject.org/api/ip)
     if echo "$tor_check" | grep -q '"IsTor":true'; then
-        echo "Tor is running."
+        echo "You're connected to the Tor network, your privacy is protected"
+        return 0
     else
-        echo "Tor is not running."
+        echo "You're not connected to the Tor network, your privacy is at risk."
+        return 1
     fi
 }
 
-
+# DNS leak test
 dns_leak_test() {
     echo "Checking DNS Leak..."
-    dig +short @resolver1.opendns.com myip.opendns.com
+    if check_tor_status; then
+        dig +short @resolver1.opendns.com myip.opendns.com
+    else
+        dig example.com
+    fi
 }
 
-
+# IP leak test
 ip_leak_test() {
     echo "Checking IP Leak..."
-    curl -s https://ipleak.net/json/
+    if check_tor_status; then
+        curl --socks5-hostname 127.0.0.1:9050 https://ipleak.net/json/
+    else
+        curl -s https://ipleak.net/json/
+    fi
 }
 
-
+# VPN check
 check_vpn_status() {
     if ip a | grep -q "tun0"; then
         echo "VPN is running."
+        return 0
     else
         echo "VPN is not running."
+        return 1
     fi
 }
 
-
+# DNSCrypt check
 check_dnscrypt() {
     if pgrep dnscrypt >/dev/null 2>&1; then
         echo "DNSCrypt is running."
-        return 10
+        return 0
     else
         echo "DNSCrypt is not running."
-        return 0
+        return 1
     fi
 }
 
@@ -46,27 +63,39 @@ check_dnscrypt() {
 check_privacy_score() {
     score=0
 
-    # Live Mode
-    if [ "$1" == "live" ]; then
+    # Live Mode - Check for specific environment variables
+    if [ "$LIVE_ENV" == "true" ] || [ "$PRODUCTION" == "true" ] || [ "$ENV" == "live" ] || [ "$ENV" == "production" ]; then
         score=$((score + 20))
+    else
+        echo "Not in live mode."
+        echo "--------------"
     fi
 
     # VPN
-    check_vpn_status
-    score=$((score + $?))
+    if check_vpn_status; then
+        score=$((score + 15))
+    else
+        echo "-------------"
+    fi
 
     # Tor
-    check_tor_status
-    score=$((score + $?))
+    if check_tor_status; then
+        score=$((score + 50))
+    else
+        echo "-------------"
+    fi
 
     # DNSCrypt
-    check_dnscrypt
-    score=$((score + $?))
+    if check_dnscrypt; then
+        score=$((score + 15))
+    else
+        echo "-------------"
+    fi
 
     echo "Your privacy score is: $score"
 }
 
-
+# System status info
 system_status() {
     echo "Uptime: $(uptime -p)"
     echo "Load Average: $(cat /proc/loadavg)"
@@ -77,7 +106,7 @@ system_status() {
     df -h
 }
 
-
+# Show system info
 system_info() {
     echo "OS: $(lsb_release -ds)"
     echo "Kernel: $(uname -r)"
@@ -87,23 +116,53 @@ system_info() {
     echo "Disk Info: $(lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT,UUID)"
 }
 
-
+# network status
 network_status() {
     ip a | grep inet
 }
 
-
+# check ip and dns
 check_ip() {
-    curl ifconfig.me
+    echo "Checking IP and DNS settings:"
+
+    # Check for Tor IP and status
+    HTML=$(curl -s https://check.torproject.org/?lang=en_US)
+    if echo "$HTML" | grep -q "Congratulations. This browser is configured to use Tor."; then
+        TOR_IP=$(echo "$HTML" | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | head -n 1)
+        echo "You appear to be connected to the Tor network.Your Tor IP Address: $TOR_IP"
+    else
+        ip=$(curl --silent ifconfig.me)
+        dns=$(grep 'nameserver' /etc/resolv.conf | awk '{print $2}')
+        echo "IP Address: $ip"
+        echo "DNS Addres: $dns"
+    fi
 }
 
 
+
+# change dns server
 change_dns() {
-    echo "Changing DNS to Cloudflare (1.1.1.1)..."
-    echo "nameserver 1.1.1.1" | sudo tee /etc/resolv.conf
+    echo "1) Use Cloudflare DNS (1.1.1.1)"
+    echo "2) Enter a custom DNS server address"
+    read -p "Choose an option: " dns_option
+
+    case $dns_option in
+        1)
+            echo "Changing DNS to Cloudflare (1.1.1.1)..."
+            echo "nameserver 1.1.1.1" | sudo tee /etc/resolv.conf
+            ;;
+        2)
+            read -p "Enter the DNS server address: " custom_dns
+            echo "Changing DNS to $custom_dns..."
+            echo "nameserver $custom_dns" | sudo tee /etc/resolv.conf
+            ;;
+        *)
+            echo "Invalid option! Please select a valid option."
+            ;;
+    esac
 }
 
-
+# delete network traces with bleachbit
 delete_network_traces() {
     echo "Deleting network traces with BleachBit..."
     sudo apt-get install -y bleachbit
@@ -111,15 +170,48 @@ delete_network_traces() {
     echo "Network traces deleted."
 }
 
-
+# privacy status check
 check_privacy_status() {
+    echo "----------------------------"
     echo "Checking privacy settings..."
-    ps aux | grep tor
+    
+    # Check TOR status
+    if check_tor_status; then
+        echo "[+]TOR is running."
+    else
+        echo "[!]TOR is not running."
+    fi
+
+    # Check VPN status
+    if ip a | grep -q tun0; then
+        echo "[+]VPN is active."
+    else
+        echo "[!]VPN is not active."
+    fi
+
+    # Check DNS status
+    echo "[+]Current DNS addres:"
+    cat /etc/resolv.conf | grep nameserver
+
+    # Check Proxy settings
+    if [ -n "$http_proxy" ] || [ -n "$https_proxy" ]; then
+        echo "[+]Proxy is set."
+        echo "HTTP Proxy: $http_proxy"
+        echo "HTTPS Proxy: $https_proxy"
+    else
+        echo "[!]Proxy is not set."
+    fi
+
+    # Check UFW status
+    echo "[-]Firewall Status:"
     sudo ufw status
+    
+    # Check AppArmor status
+    echo "[-]AppArmor Status:"
     sudo apparmor_status
 }
 
-
+# security scan
 security_scan() {
     echo "Running detailed security scan..."
     sudo apt install -y clamav
@@ -127,7 +219,7 @@ security_scan() {
     sudo clamscan -r --bell -i --exclude-dir="^/sys" --exclude-dir="^/proc" --exclude-dir="^/dev" /
 }
 
-
+# cleaning traces 
 cleaning_traces() {
     echo "Cleaning traces..."
     history -c && history -w
@@ -136,30 +228,29 @@ cleaning_traces() {
     echo "Traces cleaned."
 }
 
-
+# RAM wipe
 wipe_ram() {
     echo "Wiping RAM..."
     sync; echo 3 > /proc/sys/vm/drop_caches
     sudo sh -c "echo 1 > /proc/sys/vm/drop_caches"
 }
 
-
+# disk wipe
 wipe_disk() {
     read -p "Enter the disk to wipe (e.g., /dev/sdX): " disk
     sudo shred -v -n 5 -z "$disk"
 }
 
-
+# change the hostname
 change_hostname() {
     read -p "Enter new hostname: " new_host
     sudo hostnamectl set-hostname "$new_host"
 }
 
-
+# physical security settings
 physical_security() {
     echo "Activating physical security measures..."
 
-   
     echo "Disabling USB ports..."
     sudo sh -c "echo 'blacklist usb-storage' > /etc/modprobe.d/blacklist-usb.conf"
 
@@ -170,7 +261,7 @@ physical_security() {
     sudo setterm -blank force
 
     echo "Enabling TPM security (if available)..."
-    
+
     echo "Setting kernel security parameters..."
     sudo sysctl -w kernel.randomize_va_space=2
     sudo sysctl -w kernel.kptr_restrict=2
@@ -182,23 +273,20 @@ physical_security() {
     sudo modprobe -r usb_storage
     echo "blacklist usb_storage" | sudo tee /etc/modprobe.d/blacklist-usb-storage.conf
 
-
     echo "Setting tmp security parameters..."
     sudo mount -o remount,nodev,noexec,nosuid /tmp
 
     echo "Physical security measures are now in place."
 }
 
-
+# disable physical security
 disable_physical_security() {
     echo "Disabling physical security measures..."
 
-    # USB portlarını etkinleştir
     echo "Enabling USB ports..."
     sudo rm /etc/modprobe.d/blacklist-usb.conf
     sudo modprobe usb_storage
 
-    # Kernel güvenlik önlemlerini eski haline getirme
     echo "Reverting kernel security parameters..."
     sudo sysctl -w kernel.randomize_va_space=1
     sudo sysctl -w kernel.kptr_restrict=0
@@ -206,21 +294,20 @@ disable_physical_security() {
     sudo sysctl -w fs.protected_hardlinks=0
     sudo sysctl -w fs.protected_symlinks=0
 
-    # Donanım güvenliğini eski haline getirme
     echo "Reverting hardware security parameters..."
     sudo rm /etc/modprobe.d/blacklist-usb-storage.conf
 
-    # TMP güvenliğini eski haline getirme
     echo "Reverting tmp security parameters..."
     sudo mount -o remount /tmp
 
     echo "Physical security measures have been disabled."
 }
 
-
+# checking kernel security status
 check_kernel_security_status() {
     echo "Checking kernel security status..."
     
+# Function to check if Paranoia Mode is enabled
 is_paranoia_mode_enabled() {
     if [ -f /etc/sysctl.d/99-paranoia-mode.conf ] && iptables -L INPUT | grep -q "DROP"; then
         return 0
@@ -229,7 +316,7 @@ is_paranoia_mode_enabled() {
     fi
 }
 
-
+# Check if /etc/sysctl.d/99-securonis-hardening.conf exists
 if [ -f /etc/sysctl.d/99-securonis-hardening.conf ]; then
     echo "[+]Kernel Settings are done. Your system is very secure against Network and System attacks."
 else
@@ -238,49 +325,49 @@ else
     echo "systemhardening"
 fi
 
-
+# Check if Paranoia Mode is enabled
 if is_paranoia_mode_enabled; then
     echo "You are in Paranoia Mode. Your system is at the highest security level."
 fi
 }
 
-
+# Paranoia mode
 activate_paranoia_mode() {
     echo "Activating paranoia mode..."
     sudo /usr/local/bin/paranoia
 }
 
-
+# Paranoia mode disable
 deactivate_paranoia_mode() {
     echo "Deactivating paranoia mode..."
     sudo /usr/local/bin/paranoiadeactivate
 }
 
-
+# destroy the all data and traces
 nuke_the_system() {
     echo "Nuking the system..."
     sudo /usr/local/bin/nuke2system
 }
 
-
+# Disk cryption control
 check_disk_encryption() {
     echo "Checking disk encryption..."
     sudo lsblk -o NAME,FSTYPE,MOUNTPOINT,UUID
 }
 
-
+# security updates check
 check_security_updates() {
     echo "Checking for security updates..."
     sudo apt update && sudo apt list --upgradable | grep -i security
 }
 
-
+# All ip info
 check_all_ip_info() {
     echo "Checking all IP information..."
     curl ifconfig.me/all
 }
 
-
+# mac address spoof
 spoof_mac() {
     read -p "Enter network interface (e.g., eth0, wlan0): " iface
     sudo ifconfig "$iface" down
@@ -289,7 +376,7 @@ spoof_mac() {
     echo "MAC address spoofed."
 }
 
-
+# free space wipe
 wipe_free_space() {
     echo "Wiping free space..."
     sudo dd if=/dev/zero of=/zerofillfile bs=1M
@@ -297,12 +384,24 @@ wipe_free_space() {
     echo "Free space wiped."
 }
 
-
+# SSL/TLS fingerprint verification
 ssl_tls_fingerprint_verification() {
     read -p "Enter domain to verify: " domain
     echo | openssl s_client -connect "$domain":443 2>/dev/null | openssl x509 -fingerprint -noout
 }
 
+# Firewall hardening
+enable_firewall() {
+    echo "Enabling firewall..."
+    sudo ufw enable
+    echo "Firewall enabled."
+}
+
+disable_firewall() {
+    echo "Disabling firewall..."
+    sudo ufw disable
+    echo "Firewall disabled."
+}
 
 harden_firewall() {
     echo "Hardening firewall rules..."
@@ -312,38 +411,76 @@ harden_firewall() {
     echo "Firewall hardened."
 }
 
+disable_hardened_firewall() {
+    echo "Disabling hardened firewall rules..."
+    sudo ufw default allow incoming
+    sudo ufw default allow outgoing
+    sudo ufw disable
+    echo "Hardened firewall disabled."
+}
 
+firewall_settings() {
+    echo "1. Enable Firewall"
+    echo "2. Disable Firewall"
+    echo "3. Enable Hardened Firewall"
+    echo "4. Disable Hardened Firewall"
+    echo "5. Exit"
+    read -p "Select an option: " option
+    case $option in
+        1)
+            enable_firewall
+            ;;
+        2)
+            disable_firewall
+            ;;
+        3)
+            harden_firewall
+            ;;
+        4)
+            disable_hardened_firewall
+            ;;
+        5)
+            exit 0
+            ;;
+        *)
+            echo "Invalid option. Please try again."
+            menu
+            ;;
+    esac
+}
+
+# network traffic monitor
 monitor_network_traffic() {
     echo "Monitoring network traffic..."
     sudo iftop -i $(ip route | grep '^default' | awk '{print $5}')
 }
 
-
+# secure file delete
 secure_delete() {
     read -p "Enter file or directory to securely delete: " target
     sudo srm -rv "$target"
 }
 
-
+# browser traces
 delete_browser_traces() {
     echo "Deleting browser traces..."
     rm -rf ~/.mozilla/firefox/*.default-release/places.sqlite ~/.config/google-chrome/Default/History
     echo "Browser traces deleted."
 }
 
-
+# IP location check
 check_ip_location() {
     echo "Checking IP location..."
     curl -s ipinfo.io
 }
 
-
+# mitm attack defense
 mitm_attack_check_defense() {
     echo "Running MITM attack check and defense..."
     sudo /usr/local/bin/antimitm
 }
 
-
+# ASCII menu 
 while true; do
     clear
     echo "====================================="
@@ -366,7 +503,7 @@ while true; do
     echo "====================================="
     echo "              Menu                   "
     echo "====================================="
-    echo "1) Check IP"
+    echo "1) Check IP & DNS"
     echo "2) Check IP Location"
     echo "3) Check Privacy Score"
     echo "4) Check Tor Status"
@@ -390,7 +527,7 @@ while true; do
     echo "20) Check Kernel Security Status"
     echo "21) Check Disk Encryption"
     echo "22) Check Security Updates"
-    echo "23) Set Hardened Firewall Rules"
+    echo "23) Set Firewall Rules"
     echo "24) Secure File Delete"
     echo "-------------------"
     echo "25) SSL/TLS Fingerprint Verification"
@@ -411,7 +548,9 @@ while true; do
     case $choice in
         1) check_ip ;;
         2) check_ip_location ;;
-        3) check_privacy_score ;;
+        3) check_privacy_score
+           check_privacy_status
+            ;;
         4) check_tor_status ;;
         5) check_vpn_status ;;
         6) check_all_ip_info ;;
@@ -431,7 +570,7 @@ while true; do
         20) check_kernel_security_status ;;
         21) check_disk_encryption ;;
         22) check_security_updates ;;
-        23) harden_firewall ;;
+        23) firewall_settings ;;
         24) secure_delete ;;
         25) ssl_tls_fingerprint_verification ;;
         26) delete_browser_traces ;;

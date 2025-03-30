@@ -11,6 +11,7 @@ display_scripts() {
     echo "controlpanel        - Opens the control panel for Securonis Linux."
     echo "donate              - Provides information on how to donate to the Securonis project."
     echo "info                - Displays system information."
+    echo "update               - Update system and remove caches"
     echo "install-nvidia-driver - Installs the NVIDIA driver."
     echo "livesettings        - Shows live system settings and configurations."
     echo "netraffic           - Monitors network traffic."
@@ -27,6 +28,7 @@ display_scripts() {
     echo "system-manager      - Opens the system manager for Securonis Linux."
     echo "systemhardening     - Applies system hardening settings."
     echo "timespoof           - Spoofs system time for security purposes."
+    echo "filemanagement      - Simple file manager script."
 }
 
 # Main function to handle the command

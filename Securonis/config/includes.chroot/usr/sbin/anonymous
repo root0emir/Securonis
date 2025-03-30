@@ -2,7 +2,7 @@
 
 # Securonis Script for Enhanced Anonymity and Privacy
 # Configures Securonis Linux for maximum online anonymity using the Tor network.
-# Version: 1.2
+# Version: 1.3
 # Tor traffic router
 # Note: Always review the script and ensure you understand its functionality
 # before execution. Use it responsibly and adhere to local laws and regulations.
@@ -264,6 +264,8 @@ do_start() {
 	check_configs
 	check_root
 
+	echo "\n[!] This script provides advanced privacy by forcing the entire system to operate through the Tor network using a transparent proxy. However, using the Tor browser while anonymous mode is active can lead to issues such as 'Tor over Tor', which may cause data leaks and security vulnerabilities. Therefore, using the Tor browser with torify is not recommended. Please be cautious.\n"
+
 	warning
 
 	echo "\n[i] Starting anonymous mode"
@@ -276,11 +278,7 @@ do_start() {
 
 	check_livecd
 
-	if ask "Do you want transparent routing through Tor?" Y; then
-		redirect_to_tor
-	else
-		echo
-	fi
+	redirect_to_tor
 
 	if ask "Do you want to change MAC address?" Y; then
 		manage_mac_address change
@@ -355,8 +353,6 @@ do_status() {
 	echo "Public IP         : $IP"
 	echo "------------------------------------------------------"
 
-	echo "Network Interfaces:\n"
-
 	# Loop through all interfaces and get the interface name and MAC address (ether)
 	ifconfig -a | while read -r line; do
 		# Check if line contains an interface name (e.g., "enp0s3:")
@@ -370,17 +366,6 @@ do_status() {
 			echo "$mac_address | $interface"
 		fi
 	done
-
-	# Display routing table
-	echo "------------------------------------------------------"
-	echo "Routing Table:\n"
-	route -n
-	echo "------------------------------------------------------"
-
-	# Display active connections
-	echo "Active Connections:\n"
-	ss -tuln
-	echo "------------------------------------------------------\n"
 }
 
 case "$1" in

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 is_paranoia_mode_enabled() {
-    if [ -f /etc/sysctl.d/99-paranoia-mode.conf ] && iptables -L INPUT | grep -q "DROP"; then
+    if [ -f /etc/sysctl.d/999-paranoia-mode.conf ] && iptables -L INPUT | grep -q "DROP"; then
         return 0
     else
         return 1
@@ -22,7 +22,7 @@ disable_paranoia_mode() {
         sudo rm -f /etc/iptables/rules.v4
 
         # Remove kernel hardening settings
-        sudo rm -f /etc/sysctl.d/99-paranoia-mode.conf
+        sudo rm -f /etc/sysctl.d/999-paranoia-mode.conf
         sudo rm -f /etc/modprobe.d/paranoia-mode.conf
 
         # Apply default settings

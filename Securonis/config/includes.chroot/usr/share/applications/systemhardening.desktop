@@ -2,7 +2,7 @@
 Version=1.0
 Name=System Hardening Settings
 Comment=Kernel hardening and network settings management
-Exec=mate-terminal -- bash -c "/usr/local/bin/systemhardening; exec bash"
+Exec=mate-terminal -- bash -c "sudo /usr/local/bin/systemhardening; exec bash"
 Icon=/usr/share/icons/securonis/icon10.png
 Terminal=true
 Type=Application

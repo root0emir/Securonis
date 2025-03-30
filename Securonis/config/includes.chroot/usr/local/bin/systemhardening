@@ -1,8 +1,14 @@
 #!/bin/bash
 
 # Securonis Linux - System and Kernel Hardening
+# Developer : root0emir
 
-set -e
+
+# this script need a root permission
+if [[ $EUID -ne 0 ]]; then
+   echo "!-This script requires root permissions. Please run it with 'sudo'." 
+   exit 1
+fi
 
 # ASCII Art Function
 ascii_art() {
@@ -31,7 +37,11 @@ menu() {
     echo "4) SELinux Settings"
     echo "5) Disable System Logs"
     echo "6) Enable System Logs"
-    echo "7) Exit"
+    echo "7) Enable MACsec Encryption"
+    echo "8) Disable MACsec Encryption"
+    echo "9) Enable Firewall"
+    echo "10) Disable Firewall"
+    echo "11) Exit"
 }
 
 # Enable System Hardening
@@ -76,10 +86,10 @@ EOF
     sysctl --system
 
     # Restrict module loading
-    echo "install usb-storage /bin/false" >> /etc/modprobe.d/secure.conf
-    echo "install firewire-core /bin/false" >> /etc/modprobe.d/secure.conf
-    echo "install cramfs /bin/false" >> /etc/modprobe.d/secure.conf
-    echo "install freevxfs /bin/false" >> /etc/modprobe.d/secure.conf
+    echo "install usb-storage /bin/false" | tee -a /etc/modprobe.d/secure.conf
+    echo "install firewire-core /bin/false" | tee -a /etc/modprobe.d/secure.conf
+    echo "install cramfs /bin/false" | tee -a /etc/modprobe.d/secure.conf
+    echo "install freevxfs /bin/false" | tee -a /etc/modprobe.d/secure.conf
 
     echo "[+] Kernel Hardening Completed."
 }
@@ -88,11 +98,11 @@ EOF
 restore_default_kernel_settings() {
     echo "[!] Restoring default kernel settings..."
     # Remove custom hardening settings
-    sudo rm -f /etc/sysctl.d/99-securonis-hardening.conf
-    sudo rm -f /etc/modprobe.d/secure.conf
+    rm -f /etc/sysctl.d/99-securonis-hardening.conf
+    rm -f /etc/modprobe.d/secure.conf
 
     # Apply default settings
-    sudo sysctl --system
+    sysctl --system
 
     echo "[✔] Default kernel settings have been restored!"
 }
@@ -100,37 +110,45 @@ restore_default_kernel_settings() {
 # AppArmor Settings
 apparmor_settings() {
     echo "[+] Configuring AppArmor settings..."
-    sudo systemctl start apparmor
-    sudo systemctl enable apparmor
-    sudo aa-enforce /etc/apparmor.d/*
-
-    echo "[✔] AppArmor settings have been configured!"
+    systemctl start apparmor
+    systemctl enable apparmor
+    if command -v aa-enforce &> /dev/null; then
+        aa-enforce /etc/apparmor.d/*
+        echo "[✔] AppArmor settings have been configured!"
+    else
+        echo "AppArmor tools are not installed. Please install AppArmor tools first."
+    fi
 }
 
 # SELinux Settings
 selinux_settings() {
     echo "[+] Configuring SELinux settings..."
     if [ -f /etc/selinux/config ]; then
-        sudo setenforce 1
-        sudo sed -i 's/SELINUX=disabled/SELINUX=enforcing/' /etc/selinux/config
+        setenforce 1
+        sed -i 's/SELINUX=disabled/SELINUX=enforcing/' /etc/selinux/config
+        echo "[✔] SELinux settings have been configured!"
     else
-        echo "SELinux is not installed!"
+        echo "SELinux is not installed! Would you like to install SELinux? (y/n)"
+        read -r install_selinux
+        if [ "$install_selinux" == "y" ]; then
+            apt-get install -y selinux-utils selinux-basics
+            selinux-activate
+            echo "SELinux has been installed and activated. Please rerun the SELinux settings option."
+        fi
     fi
-
-    echo "[✔] SELinux settings have been configured!"
 }
 
 # Disable System Logs
 disable_system_logs() {
     echo "[!] Disabling system logs..."
-    sudo systemctl stop rsyslog
-    sudo systemctl disable rsyslog
-    sudo systemctl stop systemd-journald
-    sudo systemctl disable systemd-journald
+    systemctl stop rsyslog
+    systemctl disable rsyslog
+    systemctl stop systemd-journald
+    systemctl disable systemd-journald
 
     # Clear existing logs
-    sudo rm -rf /var/log/*
-    sudo journalctl --vacuum-time=1s
+    rm -rf /var/log/*
+    journalctl --vacuum-time=1s
 
     echo "[✔] System logs have been disabled!"
 }
@@ -138,12 +156,53 @@ disable_system_logs() {
 # Enable System Logs
 enable_system_logs() {
     echo "[+] Enabling system logs..."
-    sudo systemctl start rsyslog
-    sudo systemctl enable rsyslog
-    sudo systemctl start systemd-journald
-    sudo systemctl enable systemd-journald
+    systemctl start rsyslog
+    systemctl enable rsyslog
+    systemctl start systemd-journald
+    systemctl enable systemd-journald
 
     echo "[✔] System logs have been enabled!"
+}
+
+# Enable MACsec Encryption
+enable_macsec() {
+    read -p "Enter network interface (e.g., eth0): " interface
+    read -p "Enter MACsec key: " macsec_key
+
+    # Install required packages
+    apt-get install -y iproute2
+
+    # Enable MACsec
+    ip link add link $interface macsec0 type macsec
+    ip macsec add macsec0 tx sa 0 pn 1 on key 00 $macsec_key
+    ip link set macsec0 up
+
+    echo "[✔] MACsec Encryption enabled on $interface"
+}
+
+# Disable MACsec Encryption
+disable_macsec() {
+    read -p "Enter network interface (e.g., eth0): " interface
+
+    # Disable MACsec
+    ip link set macsec0 down
+    ip link del macsec0
+
+    echo "[✔] MACsec Encryption disabled on $interface"
+}
+
+# Enable Firewall
+enable_firewall() {
+    echo "[+] Enabling firewall..."
+    sudo ufw enable
+    echo "[✔] Firewall enabled!"
+}
+
+# Disable Firewall
+disable_firewall() {
+    echo "[!] Disabling firewall..."
+    sudo ufw disable
+    echo "[✔] Firewall disabled!"
 }
 
 # Main Menu Loop
@@ -158,7 +217,11 @@ while true; do
         4) selinux_settings ;;
         5) disable_system_logs ;;
         6) enable_system_logs ;;
-        7) echo "Exiting..."; exit 0 ;;
+        7) enable_macsec ;;
+        8) disable_macsec ;;
+        9) enable_firewall ;;
+        10) disable_firewall ;;
+        11) echo "Exiting..."; exit 0 ;;
         *) echo "Invalid choice! Please select a valid option.";;
     esac
 

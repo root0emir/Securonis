@@ -8,14 +8,17 @@ import string
 from cryptography.fernet import Fernet
 
 class TerminalPasswordManager:
-    def __init__(self, file_path='passwords.json'):
+    def __init__(self, file_path=None):
+        if file_path is None:
+            file_path = '/etc/secure_passwords/passwords.json'
         self.file_path = file_path
         self.key = self.load_key()
         self.fernet = Fernet(self.key)
         self.passwords = self.load_passwords()
 
     def load_key(self):
-        key_path = 'secret.key'
+        key_path = '/etc/secure_passwords/secret.key'
+        os.makedirs(os.path.dirname(key_path), exist_ok=True)
         if os.path.exists(key_path):
             with open(key_path, 'rb') as key_file:
                 return key_file.read()
@@ -23,6 +26,7 @@ class TerminalPasswordManager:
             key = Fernet.generate_key()
             with open(key_path, 'wb') as key_file:
                 key_file.write(key)
+            os.chmod(key_path, 0o600)  # Set permissions to read/write for owner only
             return key
 
     def load_passwords(self):
@@ -35,6 +39,7 @@ class TerminalPasswordManager:
 
     def save_passwords(self):
         encrypted_data = self.fernet.encrypt(json.dumps(self.passwords).encode())
+        os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
         with open(self.file_path, 'wb') as file:
             file.write(encrypted_data)
 

@@ -1,20 +1,29 @@
 #!/usr/bin/env python3
+
+# Version 1.2 Developer: root0emir
+
 import scapy.all as scapy
 import os
 import sys
 import signal
-import time
 from datetime import datetime
 
 def get_mac(ip):
-    arp_request = scapy.ARP(pdst=ip)
-    broadcast = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
-    arp_request_broadcast = broadcast / arp_request
-    answered_list = scapy.srp(arp_request_broadcast, timeout=1, verbose=False)[0]
-    return answered_list[0][1].hwsrc if answered_list else None
+    try:
+        arp_request = scapy.ARP(pdst=ip)
+        broadcast = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
+        arp_request_broadcast = broadcast / arp_request
+        answered_list = scapy.srp(arp_request_broadcast, timeout=1, verbose=False)[0]
+        return answered_list[0][1].hwsrc if answered_list else None
+    except Exception as e:
+        print(f"[!] Error getting MAC address for IP {ip}: {e}")
+        return None
 
 def sniff_packets(interface):
-    scapy.sniff(iface=interface, store=False, prn=process_packet)
+    try:
+        scapy.sniff(iface=interface, store=False, prn=process_packet)
+    except Exception as e:
+        print(f"[!] Error sniffing packets on interface {interface}: {e}")
 
 def process_packet(packet):
     if packet.haslayer(scapy.ARP) and packet[scapy.ARP].op == 2:
@@ -27,40 +36,53 @@ def process_packet(packet):
                 print(alert_msg)
                 print(f"    Real MAC: {real_mac}, Fake MAC: {response_mac}")
                 block_attacker(packet[scapy.ARP].psrc)
-                log_attack(alert_msg, packet[scapy.ARP].psrc, real_mac, response_mac)
+            else:
+                print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] No attack detected from IP: {packet[scapy.ARP].psrc}")
         except IndexError:
             pass
+        except Exception as e:
+            print(f"[!] Error processing packet: {e}")
 
 def block_attacker(ip):
-    os.system(f"iptables -A INPUT -s {ip} -j DROP")
-    os.system(f"iptables -A FORWARD -s {ip} -j DROP")
-    print(f"[+] Blocked attacker IP: {ip}")
-
-def log_attack(alert_msg, ip, real_mac, fake_mac):
-    with open("attack_log.txt", "a") as log_file:
-        log_file.write(f"{alert_msg}\n")
-        log_file.write(f"    IP: {ip}, Real MAC: {real_mac}, Fake MAC: {fake_mac}\n")
+    try:
+        os.system(f"iptables -A INPUT -s {ip} -j DROP")
+        os.system(f"iptables -A FORWARD -s {ip} -j DROP")
+        print(f"[+] Blocked attacker IP: {ip}")
+    except Exception as e:
+        print(f"[!] Error blocking attacker IP {ip}: {e}")
 
 def restore_network(gateway_ip, gateway_mac, target_ip, target_mac):
-    packet = scapy.ARP(op=2, pdst=target_ip, hwdst=target_mac, psrc=gateway_ip, hwsrc=gateway_mac)
-    scapy.send(packet, count=4, verbose=False)
+    try:
+        packet = scapy.ARP(op=2, pdst=target_ip, hwdst=target_mac, psrc=gateway_ip, hwsrc=gateway_mac)
+        scapy.send(packet, count=4, verbose=False)
+    except Exception as e:
+        print(f"[!] Error restoring network: {e}")
 
 def signal_handler(sig, frame):
     print("\n[*] Stopping packet sniffing...")
     sys.exit(0)
 
 def get_network_info():
-    gateway_ip = scapy.conf.route.route("0.0.0.0")[2]
-    gateway_mac = get_mac(gateway_ip)
-    if not gateway_mac:
-        sys.exit("[!] Could not get gateway MAC address. Exiting...")
+    try:
+        gateway_ip = scapy.conf.route.route("0.0.0.0")[2]
+        gateway_mac = get_mac(gateway_ip)
+        if not gateway_mac:
+            sys.exit("[!] Could not get gateway MAC address. Exiting...")
 
-    target_ip = scapy.get_if_addr(scapy.conf.iface)
-    target_mac = get_mac(target_ip)
-    if not target_mac:
-        sys.exit("[!] Could not get target MAC address. Exiting...")
+        target_ip = scapy.get_if_addr(scapy.conf.iface)
+        target_mac = get_mac(target_ip)
+        if not target_mac:
+            sys.exit("[!] Could not get target MAC address. Exiting...")
 
-    return gateway_ip, gateway_mac, target_ip, target_mac
+        return gateway_ip, gateway_mac, target_ip, target_mac
+    except Exception as e:
+        sys.exit(f"[!] Error getting network information: {e}")
+
+def check_network_interface(interface):
+    try:
+        scapy.get_if_hwaddr(interface)
+    except ValueError:
+        sys.exit(f"[!] Network interface {interface} is not available. Please check if it is connected and try again.")
 
 def main():
     if os.geteuid() != 0:
@@ -69,6 +91,7 @@ def main():
     signal.signal(signal.SIGINT, signal_handler)
 
     interface = scapy.conf.iface
+    check_network_interface(interface)
     print(f"[*] Using network interface: {interface}")
 
     gateway_ip, gateway_mac, target_ip, target_mac = get_network_info()
@@ -82,6 +105,10 @@ def main():
         print("[*] Stopping packet sniffing...")
         restore_network(gateway_ip, gateway_mac, target_ip, target_mac)
         sys.exit(0)
+    except Exception as e:
+        print(f"[!] Error in main: {e}")
+        restore_network(gateway_ip, gateway_mac, target_ip, target_mac)
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

@@ -25,3 +25,5 @@ apt-utils
 gnupg
 ca-certificates
 util-linux
+apt-transport-https
+smartmontools

@@ -7,7 +7,9 @@ from datetime import datetime
 import calendar
 
 class TerminalNotes:
-    def __init__(self, file_path='notes.json', key_path='secret.key'):
+    def __init__(self, file_path='notes.json', key_path=None):
+        if key_path is None:
+            key_path = '/etc/secure_notes/secret.key'
         self.file_path = file_path
         self.key_path = key_path
         self.key = self.load_key()
@@ -15,6 +17,7 @@ class TerminalNotes:
         self.notes = self.load_notes()
 
     def load_key(self):
+        os.makedirs(os.path.dirname(self.key_path), exist_ok=True)
         if os.path.exists(self.key_path):
             with open(self.key_path, 'rb') as key_file:
                 return key_file.read()
@@ -22,6 +25,7 @@ class TerminalNotes:
             key = Fernet.generate_key()
             with open(self.key_path, 'wb') as key_file:
                 key_file.write(key)
+            os.chmod(self.key_path, 0o600)  # Set permissions to read/write for owner only
             return key
 
     def load_notes(self):

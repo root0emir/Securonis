@@ -32,20 +32,28 @@ menu() {
     echo "4) Exit"
 }
 
+# Function to check if command exists
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
 # Enable DNSCrypt
 enable_dnscrypt() {
-    echo "[+] Installing DNSCrypt..."
-    sudo apt update
-    sudo apt install -y dnscrypt-proxy
+    echo "[+] Checking for dnscrypt-proxy..."
+    if command_exists dnscrypt-proxy; then
+        echo "[+] dnscrypt-proxy is already installed. Updating..."
+        sudo apt update
+        sudo apt upgrade -y dnscrypt-proxy
+    else
+        echo "[+] dnscrypt-proxy not found. Installing..."
+        sudo apt update
+        sudo apt install -y dnscrypt-proxy
+    fi
 
     echo "[+] Configuring DNSCrypt service..."
-    cd /etc/dnscrypt-proxy
+    cd /etc/dnscrypt-proxy || { echo "Directory /etc/dnscrypt-proxy not found."; return 1; }
     sudo dnscrypt-proxy -service install
     sudo dnscrypt-proxy -service start
-
-    echo "[+] Updating system DNS settings..."
-    sudo sed -i 's/#DNS=/DNS=127.0.0.1/' /etc/systemd/resolved.conf
-    sudo systemctl restart systemd-resolved
 
     echo "[✔] DNSCrypt has been successfully enabled!"
 }
@@ -56,10 +64,6 @@ disable_dnscrypt() {
     sudo dnscrypt-proxy -service stop
     sudo dnscrypt-proxy -service uninstall
 
-    echo "[+] Restoring default DNS settings..."
-    sudo sed -i 's/DNS=127.0.0.1/#DNS=/' /etc/systemd/resolved.conf
-    sudo systemctl restart systemd-resolved
-
     echo "[✔] DNS Encryption has been disabled!"
 }
 
@@ -67,10 +71,6 @@ disable_dnscrypt() {
 check_status() {
     echo "[+] DNSCrypt Service Status:"
     sudo systemctl status dnscrypt-proxy | grep "Active:"
-
-    echo "[+] DNS Resolution Test:"
-    cd /etc/dnscrypt-proxy
-    dnscrypt-proxy -resolve example.com
 }
 
 # Main Menu Loop
