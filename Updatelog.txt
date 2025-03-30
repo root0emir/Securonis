@@ -100,6 +100,8 @@ New Config: Firefox has now been made much more secure with its tweaks
 
 
 
+Privacy and Security tests V2 completed ✓ 
+
 
 
 
