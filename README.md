@@ -13,6 +13,8 @@ https://securonis.sourceforge.io
 
 # Securonis Linux 2.0 Test 
 
+![Ekran görüntüsü 2025-03-29 203510](https://github.com/user-attachments/assets/d73cc495-fa57-458d-a651-a92bff174ff6)
+
 ![Ekran görüntüsü 2025-03-29 001953](https://github.com/user-attachments/assets/42c62537-2693-41e5-9fac-72ac117d1b15)
 
 
@@ -33,5 +35,23 @@ Why I Created This
 
 My goal was to create a simple, minimal, fast, and secure Linux distribution. In today’s world, there isn’t a Linux distribution that can be installed on a hard drive and provides privacy and security for everyday use. Securonis does exactly that—it provides a secure system for daily use. You won’t be reliant on virtual machines or a flash drive, and you don’t have to use complex systems that constantly route Tor traffic. If you're looking for a secure browser and system experience, you're in the right place. Additionally, Securonis works in Live Mode, meaning you don’t have to install it—you can try it out or use it portably; it’s up to you. Designing Securonis was enjoyable, though quite challenging at times. I hope you enjoy using it!
 
+Developer Notes:
+
+WARNING: Securonis Linux's anonymous mode routes all network traffic through a Tor transparent proxy. This forces all applications to operate over the Tor network, providing advanced privacy across the system. However, using Tor Browser with Tor transparent proxy may cause issues and is strongly discouraged. If you intend to use Tor Browser, it is recommended to use it independently over the Tor network to avoid conflicts.For better security and privacy, it is advised to avoid using Tor Browser with the transparent proxy mode.
+
+!-It is not recommended to enable both paranoia mode and physical security mode at the same time. Also, if you apply both paranoia and system hardening settings, the kernel settings will be set according to paranoia mode first.
+
+------------
+
+Securonis Linux Torify:
 
 ![Securonis2](https://github.com/user-attachments/assets/b7ae9bd4-971d-4e84-8349-42fa1da14eb3)
+
+
+---------
+
+Developer: root0emir
+
+Developer Mail: root0emir@protonmail.com 
+
+If you encounter any errors or issues, feel free to report them. I'm also open to suggestions and ideas, so don't hesitate to reach out to me.

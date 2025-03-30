@@ -75,3 +75,33 @@ New Script - System Hardening : A powerful automation tool for kernel hardening 
 New Script - Panic Mode: A tool that allows you to check the system and network status in emergency situations and take advanced security measures.
 
 Securonis Anonymous Mode Updated 1.2 : The ability to change hostname has been removed. Also, more information is now provided. Some bug fixes have also been made. 
+
+* * * 
+
+Privacy and Security tests completed ✓
+
+Tools-Scripts Updates :
+
+antimitm: Bug fixes and more detailed logs
+
+Anonymous mode: Tor redirection is no longer requested and unnecessary status information has been removed, making the tool more functional.
+
+Panic Mode: Fixed the problem of not being able to get information and perform leak tests while on the Tor network. Added DNS check option. Updated DNS change settings. Added privacy status check. Corrected privacy scores.
+
+SecuronisDNSCrypt: Systemd error fixed.
+
+System Hardening Settings: Fixed selinux bug, added macsec encryption option
+
+Paranoia Mode: Paranoia kernel hardening settings have been prioritized
+
+
+
+New Config: Firefox has now been made much more secure with its tweaks
+
+
+
+Privacy and Security tests V2 completed ✓ 
+
+
+
+
