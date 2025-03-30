@@ -82,7 +82,7 @@ Privacy and Security tests completed ✓
 
 Tools-Scripts Updates :
 
-antimitm Updated to 1.2: Bug fixes and more detailed logs
+antimitm: Bug fixes and more detailed logs
 
 Anonymous mode: Tor redirection is no longer requested and unnecessary status information has been removed, making the tool more functional.
 
