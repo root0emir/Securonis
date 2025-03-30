@@ -21,6 +21,10 @@ https://securonis.sourceforge.io
 
 # About
 
+WARNING:Securonis Linux's anonymous mode routes all network traffic through a Tor transparent proxy. This forces all applications to operate over the Tor network, providing advanced privacy across the system. However, using Tor Browser with Tor transparent proxy may cause issues and is strongly discouraged. If you intend to use Tor Browser, it is recommended to use it independently over the Tor network to avoid conflicts.
+
+For better security and privacy, it is advised to avoid using Tor Browser with the transparent proxy mode.
+
 Securonis Linux is a Debian Testing-based Linux distribution focused on privacy and security. Simplicity and minimalism are the core philosophy of Securonis. It comes with a special script that routes all internet traffic through the Tor network. Users can start traffic routing with a single click, encrypt DNS with a single click, and harden the kernel against attacks with a single click. Unlike other systems, mandatory traffic routing is not always enforced; users have the freedom to configure the system as they wish. However, everything is designed to be as simple as possible through automation.
 
 Securonis uses the MATE desktop environment, which provides a fast and lightweight experience. It features Panic Mode, allowing users to manage their system, monitor identity leaks, and check system status in emergency situations. Additionally, Paranoia Mode, located within Panic Mode, completely isolates the system from the outside world and enforces strict security rules.
