@@ -1,4 +1,3 @@
 #!/bin/bash
 
-# NVIDIA Persistence Service'i maskeliyoruz
 systemctl mask nvidia-persistenced.service
