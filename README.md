@@ -17,6 +17,15 @@ https://securonis.sourceforge.io
 
 ![Ekran görüntüsü 2025-03-29 001953](https://github.com/user-attachments/assets/42c62537-2693-41e5-9fac-72ac117d1b15)
 
+# Securonis Linux 2.0 Beta NEW FUTURE: I2P Router
+
+![Ekran görüntüsü 2025-04-01 200606](https://github.com/user-attachments/assets/8cd090df-f948-481f-ac3e-ce1d4105fd3b)
+
+# Securonis Linux 2.0 Perpetual Beta 🔥 NEW FUTURE: Seconionis Tor Traffic Router 
+
+![Ekran görüntüsü 2025-04-01 232547](https://github.com/user-attachments/assets/74a2f720-a788-42a6-bf06-dbcaee3fefc3)
+![Ekran görüntüsü 2025-04-01 231936](https://github.com/user-attachments/assets/01f510b1-b5dd-4c10-8133-6266e93c4f70)
+![Ekran görüntüsü 2025-04-01 231923](https://github.com/user-attachments/assets/33222cbf-6e90-4fd2-894b-dd72748038c6)
 
 
 # About
