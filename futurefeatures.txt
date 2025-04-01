@@ -1,7 +1,5 @@
 Panic Mode: A tool that includes various scripts to ensure security in emergency situations. Leaks can be checked, traces can be deleted, system security can be tested. Most importantly, with Paranoiac mode, the system is isolated from the outside world, all network traffic is blocked, and security measures are increased. It also has a feature that takes precautions against physical attacks. [ Now available ]
 
-Anonymous Mode - I2P: I am working on a script that forces all internet traffic to go through the I2P network. This will really differentiate Securonis from other distributions. 
+I2P : [ Now available ] 
 
-I will ensure that networks such as Hyphanet, Gnunet, I2P come pre-installed.
-
-System Hardening: A script that allows users to easily configure settings such as kernel hardening, macsec, SElinux, Apparmor, etc. to increase system and network security. [ Now available ] 
+System Hardening: A script that allows users to easily configure settings such as kernel hardening, macsec, SElinux, Apparmor, etc. to increase system and network security. 
