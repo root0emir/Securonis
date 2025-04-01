@@ -17,7 +17,7 @@ https://securonis.sourceforge.io
 
 ![Ekran görüntüsü 2025-03-29 001953](https://github.com/user-attachments/assets/42c62537-2693-41e5-9fac-72ac117d1b15)
 
-# Securonis Linux 2.0 Beta NEW FUTURE: I2P Network Traffic Routing
+# Securonis Linux 2.0 Beta NEW FUTURE: I2P Router
 
 
 ![Ekran görüntüsü 2025-04-01 152635](https://github.com/user-attachments/assets/99b53ce0-6a2f-44d4-ab88-a3103f7eb30d)
