@@ -23,7 +23,7 @@ https://securonis.sourceforge.io
 
 # Securonis Linux 2.0 Perpetual Beta 🔥 NEW FUTURE: Seconionis Tor Traffic Router 
 
-![Ekran görüntüsü 2025-04-01 231725](https://github.com/user-attachments/assets/36a11581-a152-4fb4-b49d-22f931136457)
+![Ekran görüntüsü 2025-04-01 232547](https://github.com/user-attachments/assets/74a2f720-a788-42a6-bf06-dbcaee3fefc3)
 ![Ekran görüntüsü 2025-04-01 231936](https://github.com/user-attachments/assets/01f510b1-b5dd-4c10-8133-6266e93c4f70)
 ![Ekran görüntüsü 2025-04-01 231923](https://github.com/user-attachments/assets/33222cbf-6e90-4fd2-894b-dd72748038c6)
 
