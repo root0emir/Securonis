@@ -128,20 +128,20 @@ case $choice in
     alsamixer
     ;;
   12)
-    echo "Opening Securonis Linux Website..."
+    echo "https://securonis.sourceforge.io"
     xdg-open "https://securonis.sourceforge.io" 2>/dev/null || echo "Unable to open web browser."
     ;;
   13)
-    echo "Opening Securonis Linux Github page..."
+    echo "https://github.com/root0emir/Securonis"
     xdg-open "https://github.com/root0emir/Securonis" 2>/dev/null || echo "Unable to open web browser."
     ;;
   14)
     echo "Displaying About information..."
-    echo "For information about Securonis Linux, type 'about' in the terminal."
+    /usr/local/bin/about
     ;;
   15)
     echo "Displaying Help information..."
-    echo "For help with Securonis Linux, type 'help' in the terminal."
+    /usr/local/bin/info
     ;;
   16)
     echo "Exiting..."

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=I2P Router Menu
+Comment=I2P Router Cli Menu
+Exec=mate-terminal -- bash -c "/usr/local/bin/securonis-i2pmenu; exec bash"
+Icon=/usr/share/icons/securonis/icon14.png
+Terminal=true
+Type=Application
+Categories=Securonis;Securonis;

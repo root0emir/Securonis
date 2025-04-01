@@ -26,51 +26,75 @@ EOF
 menu() {
     ascii_art
     echo -e "\e[32m[Securonis Linux - DNSCrypt Manager]\e[0m"
-    echo "1) Enable DNS Encryption"
-    echo "2) Disable DNS Encryption"
-    echo "3) Check DNS Status"
-    echo "4) Exit"
+    echo "1) Start DNSCrypt"
+    echo "---------------------"
+    echo "2) Set DNSCrypt Service"
+    echo "3) Restart DNSCrypt Service"
+    echo "4) Remove DNSCrypt Service"
+    echo "---------------------"
+    echo "5) Check DNSCrypt"
+    echo "6) Check DNSCrypt Service Status"
+    echo "--------------------"
+    echo "7) Exit"
 }
 
-# Function to check if command exists
-command_exists() {
-    command -v "$1" >/dev/null 2>&1
-}
 
-# Enable DNSCrypt
 enable_dnscrypt() {
-    echo "[+] Checking for dnscrypt-proxy..."
-    if command_exists dnscrypt-proxy; then
-        echo "[+] dnscrypt-proxy is already installed. Updating..."
-        sudo apt update
-        sudo apt upgrade -y dnscrypt-proxy
-    else
-        echo "[+] dnscrypt-proxy not found. Installing..."
-        sudo apt update
-        sudo apt install -y dnscrypt-proxy
-    fi
+    echo "[+] Checking DNSCrypt configuration..."
+    cd /etc/dnscrypt-proxy
+    sudo dnscrypt-proxy -check
 
-    echo "[+] Configuring DNSCrypt service..."
-    cd /etc/dnscrypt-proxy || { echo "Directory /etc/dnscrypt-proxy not found."; return 1; }
+    echo "[+] Starting DNSCrypt proxy manually..."
+    sudo dnscrypt-proxy 
+
+    echo "[+] Checking if DNSCrypt proxy is running..."
+    sudo dnscrypt-proxy -resolve example.com
+}
+
+# Enable DNSCrypt Service
+set_systemd_service() {
+    echo "[+] Installing DNSCrypt service..."
+    cd /etc/dnscrypt-proxy
     sudo dnscrypt-proxy -service install
-    sudo dnscrypt-proxy -service start
 
-    echo "[✔] DNSCrypt has been successfully enabled!"
+    echo "[+] Starting DNSCrypt service..."
+    sudo dnscrypt-proxy -service start 
 }
 
-# Disable DNSCrypt
-disable_dnscrypt() {
-    echo "[!] Disabling DNS Encryption..."
+# Restart DNSCrypt Service
+restart_systemd_service() {
+    echo "[+] Restarting DNSCrypt service..."
+    cd /etc/dnscrypt-proxy
+    sudo dnscrypt-proxy -service restart
+}
+
+# Remove DNSCrypt Service
+remove_systemd_service() {
+    echo "[+] Stopping DNSCrypt service..."
+    cd /etc/dnscrypt-proxy
     sudo dnscrypt-proxy -service stop
-    sudo dnscrypt-proxy -service uninstall
 
-    echo "[✔] DNS Encryption has been disabled!"
+    echo "[+] Uninstalling DNSCrypt service..."
+    sudo dnscrypt-proxy -service uninstall
 }
 
-# Check DNS Status
-check_status() {
+# Check DNSCrypt Status
+check_dnscrypt_status() {
     echo "[+] DNSCrypt Service Status:"
-    sudo systemctl status dnscrypt-proxy | grep "Active:"
+    sudo systemctl status dnscrypt-proxy 
+}
+
+# Check DNSCrypt
+check_dnscrypt() {
+    echo "[+] Checking DNSCrypt configuration..."
+    cd /etc/dnscrypt-proxy
+    sudo dnscrypt-proxy -check
+
+    echo "[+] Listing available DNS servers..."
+    sudo dnscrypt-proxy -list
+
+    echo "[+] Resolving example.com using DNSCrypt..."
+    sudo dnscrypt-proxy -resolve example.com
 }
 
 # Main Menu Loop
@@ -80,10 +104,13 @@ while true; do
 
     case $choice in
         1) enable_dnscrypt ;;
-        2) disable_dnscrypt ;;
-        3) check_status ;;
-        4) echo "Exiting..."; exit 0 ;;
-        *) echo "Invalid choice! Please select a valid option.";;
+        2) set_systemd_service ;;
+        3) restart_systemd_service ;;
+        4) remove_systemd_service ;;
+        5) check_dnscrypt ;;
+        6) check_dnscrypt_status ;;
+        7) echo "Exiting..."; exit 0 ;;
+        *) echo "Invalid choice! Please select a valid option." ;;
     esac
 
     echo -e "\nPress any key to continue..."

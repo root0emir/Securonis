@@ -1,0 +1,12 @@
+[Unit]
+Description=seconionis autostart service
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/seconionis start
+ExecStop=/usr/bin/seconionis stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

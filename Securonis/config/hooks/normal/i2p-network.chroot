@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# I2P 
+echo "deb [signed-by=/usr/share/keyrings/i2p-archive-keyring.gpg] https://deb.i2p.net/ $(dpkg --status tzdata | grep Provides | cut -f2 -d'-') main" \
+  | sudo tee /etc/apt/sources.list.d/i2p.list
+
+# GPG key 
+curl -o /tmp/i2p-archive-keyring.gpg https://geti2p.net/_static/i2p-archive-keyring.gpg
+sudo cp /tmp/i2p-archive-keyring.gpg /usr/share/keyrings/i2p-archive-keyring.gpg
+
+# install
+sudo apt-get update
+sudo apt-get install -y i2p i2p-keyring

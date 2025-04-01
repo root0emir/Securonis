@@ -2,5 +2,5 @@
 
 # Website link for forums and documentation
 echo "You can access forums and documentation at the following link:"
-echo "https:securonis.sourceforge.io"
+echo "https://securonis.sourceforge.io"
 

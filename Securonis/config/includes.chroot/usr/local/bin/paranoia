@@ -7,7 +7,7 @@ set -e
 
 # Function to check if Paranoia Mode is enabled
 is_paranoia_mode_enabled() {
-    if [ -f /etc/sysctl.d/999-paranoia-mode.conf ] && iptables -L INPUT | grep -q "DROP"; then
+    if [ -f /etc/sysctl.d/999-paranoia-mode.conf ] && sudo iptables -L | grep -q "DROP"; then
         return 0
     else
         return 1
@@ -28,7 +28,7 @@ enable_paranoia_mode() {
     echo "[+] Enabling Paranoia Mode..."
 
     # Kernel-level security settings
-    cat <<EOF > /etc/sysctl.d/999-paranoia-mode.conf
+    cat <<EOF | sudo tee /etc/sysctl.d/999-paranoia-mode.conf
 # IPv4 Network Security
 net.ipv4.conf.all.rp_filter = 1  # Enable reverse path filtering
 net.ipv4.conf.default.rp_filter = 1
@@ -68,10 +68,10 @@ kernel.modules_disabled = 1     # Disable the loading of new kernel modules
 EOF
 
     # Apply settings
-    sysctl --system
+    sudo sysctl --system
 
     # Restrict module loading
-    cat <<EOF > /etc/modprobe.d/paranoia-mode.conf
+    cat <<EOF | sudo tee /etc/modprobe.d/paranoia-mode.conf
 install usb-storage /bin/false
 install firewire-core /bin/false
 install cramfs /bin/false
@@ -87,17 +87,21 @@ install rds /bin/false
 install tipc /bin/false
 EOF
 
-    # Block all incoming and outgoing network traffic
+    # Block all incoming and outgoing network traffic using iptables
     sudo iptables -P INPUT DROP
-    sudo iptables -P FORWARD DROP
     sudo iptables -P OUTPUT DROP
+    sudo iptables -P FORWARD DROP
+
+    # Allow loopback interface
+    sudo iptables -A INPUT -i lo -j ACCEPT
+    sudo iptables -A OUTPUT -o lo -j ACCEPT
 
     # Block ICMP (ping requests)
     sudo iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
     sudo iptables -A OUTPUT -p icmp --icmp-type echo-reply -j DROP
 
     # Save iptables rules
-    sudo iptables-save > /etc/iptables/rules.v4
+    sudo iptables-save | sudo tee /etc/iptables/rules.v4
 
     # Disable system logs
     sudo systemctl stop rsyslog
@@ -130,8 +134,8 @@ disable_paranoia_mode() {
         # Flush all iptables rules
         sudo iptables -F
         sudo iptables -P INPUT ACCEPT
-        sudo iptables -P FORWARD ACCEPT
         sudo iptables -P OUTPUT ACCEPT
+        sudo iptables -P FORWARD ACCEPT
 
         # Remove saved iptables rules
         sudo rm -f /etc/iptables/rules.v4

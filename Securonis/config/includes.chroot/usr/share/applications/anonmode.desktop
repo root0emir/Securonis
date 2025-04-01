@@ -1,6 +1,6 @@
 [Desktop Entry]
 Version=1.0
-Name=Securonis Anonymous Mode
+Name=Anonymous Mode
 Comment=Start, Stop, or Check Status of Anonymous Mode
 Exec=mate-terminal -- bash -c "/usr/local/bin/anonmode; exec bash"
 Icon=/usr/share/icons/securonis/icon1.png

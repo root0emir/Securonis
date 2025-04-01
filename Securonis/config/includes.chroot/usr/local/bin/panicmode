@@ -237,8 +237,22 @@ wipe_ram() {
 
 # disk wipe
 wipe_disk() {
-    read -p "Enter the disk to wipe (e.g., /dev/sdX): " disk
+    read -p "Enter the disk to wipe (e.g., /dev/sdX or /dev/nvmeXnY): " disk
+
+    if [[ "$disk" == "/dev/sda" || "$disk" == "/dev/nvme0n1" ]]; then
+        echo "! ERROR: You cannot wipe the main system disk ($disk)!"
+        exit 1
+    fi
+
+    read -p "! WARNING: This will erase all data on $disk! Are you sure? (yes/no): " confirm
+    if [[ "$confirm" != "yes" ]]; then
+        echo "Operation aborted."
+        exit 1
+    fi
+
+    echo "Wiping $disk..."
     sudo shred -v -n 5 -z "$disk"
+    echo "[+]Disk wipe completed!"
 }
 
 # change the hostname
@@ -252,55 +266,55 @@ physical_security() {
     echo "Activating physical security measures..."
 
     echo "Disabling USB ports..."
-    sudo sh -c "echo 'blacklist usb-storage' > /etc/modprobe.d/blacklist-usb.conf"
+    sudo modprobe -r usb_storage
+    echo "blacklist usb-storage" | sudo tee /etc/modprobe.d/blacklist-usb.conf
 
     echo "Locking all active sessions..."
-    sudo pkill -KILL -u $(whoami)
+    loginctl lock-session
 
     echo "Disabling screen/keyboard input..."
-    sudo setterm -blank force
+    xset dpms force off  # Ekranı kapatır
 
     echo "Enabling TPM security (if available)..."
+    sudo modprobe tpm
 
     echo "Setting kernel security parameters..."
-    sudo sysctl -w kernel.randomize_va_space=2
-    sudo sysctl -w kernel.kptr_restrict=2
-    sudo sysctl -w kernel.dmesg_restrict=1
-    sudo sysctl -w fs.protected_hardlinks=1
-    sudo sysctl -w fs.protected_symlinks=1
+    sudo tee /etc/sysctl.d/100-physical-settings.conf > /dev/null <<EOF
+kernel.randomize_va_space = 2
+kernel.kptr_restrict = 2
+kernel.dmesg_restrict = 1
+fs.protected_hardlinks = 1
+fs.protected_symlinks = 1
+EOF
+    sudo sysctl --system
 
     echo "Setting hardware security parameters..."
-    sudo modprobe -r usb_storage
     echo "blacklist usb_storage" | sudo tee /etc/modprobe.d/blacklist-usb-storage.conf
 
-    echo "Setting tmp security parameters..."
-    sudo mount -o remount,nodev,noexec,nosuid /tmp
-
-    echo "Physical security measures are now in place."
+    echo "[+]Physical security measures are now in place."
 }
 
 # disable physical security
 disable_physical_security() {
-    echo "Disabling physical security measures..."
+    echo "Restoring system settings..."
 
-    echo "Enabling USB ports..."
-    sudo rm /etc/modprobe.d/blacklist-usb.conf
-    sudo modprobe usb_storage
+    echo "Re-enabling USB ports..."
+    sudo rm -f /etc/modprobe.d/blacklist-usb.conf
+    sudo rm -f /etc/modprobe.d/blacklist-usb-storage.conf
+    sudo update-initramfs -u
+    sudo modprobe usb-storage
 
-    echo "Reverting kernel security parameters..."
-    sudo sysctl -w kernel.randomize_va_space=1
-    sudo sysctl -w kernel.kptr_restrict=0
-    sudo sysctl -w kernel.dmesg_restrict=0
-    sudo sysctl -w fs.protected_hardlinks=0
-    sudo sysctl -w fs.protected_symlinks=0
+    echo "Resetting kernel security parameters..."
+    sudo rm -f /etc/sysctl.d/100-physical-settings.conf
+    sudo sysctl --system
 
-    echo "Reverting hardware security parameters..."
-    sudo rm /etc/modprobe.d/blacklist-usb-storage.conf
+    echo "Enabling screen input..."
+    xset dpms force on  
 
-    echo "Reverting tmp security parameters..."
-    sudo mount -o remount /tmp
+    echo "Unlocking user sessions..."
+    loginctl unlock-session
 
-    echo "Physical security measures have been disabled."
+    echo "[+]System settings restored!"
 }
 
 # checking kernel security status
@@ -309,7 +323,7 @@ check_kernel_security_status() {
     
 # Function to check if Paranoia Mode is enabled
 is_paranoia_mode_enabled() {
-    if [ -f /etc/sysctl.d/99-paranoia-mode.conf ] && iptables -L INPUT | grep -q "DROP"; then
+    if [ -f /etc/sysctl.d/99-paranoia-mode.conf ]; then
         return 0
     else
         return 1
@@ -327,7 +341,7 @@ fi
 
 # Check if Paranoia Mode is enabled
 if is_paranoia_mode_enabled; then
-    echo "You are in Paranoia Mode. Your system is at the highest security level."
+    echo "[+++]You are in Paranoia Mode. Your system is at the highest security level."
 fi
 }
 
@@ -345,7 +359,7 @@ deactivate_paranoia_mode() {
 
 # destroy the all data and traces
 nuke_the_system() {
-    echo "Nuking the system..."
+    echo "Starting system nuke..."
     sudo /usr/local/bin/nuke2system
 }
 

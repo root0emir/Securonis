@@ -2,7 +2,7 @@
 Version=1.0
 Name=Password Manager
 Comment=Password Manager securely stores and manages passwords
-Exec=mate-terminal -- bash -c "/usr/local/bin/passmanager; exec bash"
+Exec=mate-terminal -- bash -c "sudo /usr/local/bin/passmanager; exec bash"
 Icon=/usr/share/icons/securonis/icon5.png
 Terminal=true
 Type=Application

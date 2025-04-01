@@ -2,7 +2,7 @@
 Version=1.0
 Name=Crypted Notes
 Comment=A simple encrypted note-taking tool
-Exec=mate-terminal -- bash -c "/usr/local/bin/notes; exec bash"
+Exec=mate-terminal -- bash -c "sudo /usr/local/bin/notes; exec bash"
 Icon=/usr/share/icons/securonis/icon8.png
 Terminal=true
 Type=Application

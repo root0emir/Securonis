@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Seconionis
+Comment=Tor Traffic Router for Securonis Linux
+Exec=mate-terminal -- bash -c "/usr/local/bin/sudo seconionismenu; exec bash"
+Icon=/usr/share/icons/securonis/icon15.png
+Terminal=true
+Type=Application
+Categories=Securonis;Securonis

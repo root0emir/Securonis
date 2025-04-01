@@ -27,3 +27,4 @@ ca-certificates
 util-linux
 apt-transport-https
 smartmontools
+lsb-release

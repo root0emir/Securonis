@@ -1,44 +1,33 @@
 #!/bin/bash
-
-# Warning: This script will securely destroy the system. All data will be lost. This action is irreversible.
-echo "WARNING: This script will securely destroy the system. All data will be lost. This action is irreversible."
-echo "NOTE: Ensure that you are running this script with root permissions."
+# WARNING: This script will securely destroy the system. All data will be lost.
+#          This action is irreversible. Run ONLY if you are absolutely sure.
+echo "WARNING: This script will securely destroy the system. All data will be lost."
+echo "NOTE: Ensure you are running this script with root permissions."
 
 echo "This action will:"
 echo "1. Overwrite all files with random data."
 echo "2. Delete all system logs."
 echo "3. Overwrite and delete all user home directories."
 echo "4. Overwrite swap space."
-echo "5. Overwrite and delete the root directory."
-echo "6. Overwrite and delete the boot directory."
-echo "7. Overwrite all partitions with random data."
-echo "8. Reboot the system."
-
+echo "5. Overwrite all partitions with random data."
+echo "6. Clear RAM caches."
+echo "7. Reboot the system."
 echo "Type 'EXIT' at any prompt to cancel the operation and exit."
 
 read -p "Are you absolutely sure you want to proceed? Type 'YES' to continue: " confirmation
-if [[ "$confirmation" == "EXIT" ]]; then
-    echo "Operation cancelled."
-    exit 1
-elif [[ "$confirmation" != "YES" ]]; then
+if [[ "$confirmation" == "EXIT" || "$confirmation" != "YES" ]]; then
     echo "Operation cancelled."
     exit 1
 fi
 
 read -p "This will permanently delete all data. Type 'DELETE' to confirm: " delete_confirmation
-if [[ "$delete_confirmation" == "EXIT" ]]; then
-    echo "Operation cancelled."
-    exit 1
-elif [[ "$delete_confirmation" != "DELETE" ]]; then
+if [[ "$delete_confirmation" == "EXIT" || "$delete_confirmation" != "DELETE" ]]; then
     echo "Operation cancelled."
     exit 1
 fi
 
 read -p "This action is irreversible. Type 'I UNDERSTAND' to proceed: " understand_confirmation
-if [[ "$understand_confirmation" == "EXIT" ]]; then
-    echo "Operation cancelled."
-    exit 1
-elif [[ "$understand_confirmation" != "I UNDERSTAND" ]]; then
+if [[ "$understand_confirmation" == "EXIT" || "$understand_confirmation" != "I UNDERSTAND" ]]; then
     echo "Operation cancelled."
     exit 1
 fi
@@ -46,62 +35,74 @@ fi
 echo "Starting secure system destruction in 10 seconds..."
 sleep 10
 
-# Function to securely delete files and directories
+# Function to securely delete a file by overwriting it with random data matching its original size.
 secure_delete() {
-    local target=$1
-    if [[ -e $target ]]; then
+    local target="$1"
+    if [[ -f "$target" ]]; then
         echo "Overwriting and deleting $target..."
-        dd if=/dev/urandom of=$target bs=1M status=progress || true
-        rm -rf $target
+        local filesize
+        filesize=$(stat -c%s "$target" 2>/dev/null)
+        if [[ -n "$filesize" && "$filesize" -gt 0 ]]; then
+            dd if=/dev/urandom of="$target" bs=1 count="$filesize" status=none || true
+        fi
+        rm -f "$target"
     fi
 }
 
+# Overwrite and delete system logs
+echo "Overwriting and deleting system logs..."
+for logfile in /var/log/*; do
+    secure_delete "$logfile"
+done
+
 # Overwrite files with random data and then delete them
 echo "Overwriting and deleting all files..."
-find / -type f -exec sh -c 'dd if=/dev/urandom of={} bs=1M status=none; rm -f {}' \; || true
-
-# Overwrite and delete system logs
-secure_delete /var/log/syslog
-secure_delete /var/log/auth.log
+# Use -xdev to avoid crossing filesystem boundaries (like /proc, /sys, etc.)
+find / -xdev -type f 2>/dev/null | while read -r file; do
+    secure_delete "$file"
+done
 
 # Overwrite and delete user home directories
+echo "Overwriting and deleting user home directories..."
 for user_home in /home/*; do
-    secure_delete $user_home
+    if [[ -d "$user_home" ]]; then
+        find "$user_home" -type f 2>/dev/null | while read -r file; do
+            secure_delete "$file"
+        done
+        rm -rf "$user_home"
+    fi
 done
 
 # Overwrite swap space
-swap_device=$(swapon --show=NAME --noheadings)
+swap_device=$(swapon --noheadings --raw | awk '{print $1}' | head -n1)
 if [[ -n "$swap_device" ]]; then
-    echo "Overwriting swap space..."
-    swapoff $swap_device
-    dd if=/dev/urandom of=$swap_device bs=1M status=progress || true
-    mkswap $swap_device
-    swapon $swap_device
+    echo "Overwriting swap space on $swap_device..."
+    swapoff "$swap_device"
+    dd if=/dev/urandom of="$swap_device" bs=1M status=progress || true
+    mkswap "$swap_device"
+    swapon "$swap_device"
 fi
 
-# Overwrite and delete root directory
-secure_delete /root
-
-# Overwrite and delete boot directory
-secure_delete /boot
-
 # Overwrite and delete all partitions
-for partition in $(lsblk -ln -o NAME | grep -v '^loop' | grep -v '^ram' | grep -v 'boot'); do
+echo "Overwriting all partitions with random data..."
+for partition in $(lsblk -ln -o NAME | grep -v '^loop' | grep -v '^ram'); do
     echo "Overwriting /dev/$partition..."
-    dd if=/dev/urandom of=/dev/$partition bs=1M status=progress || true
+    dd if=/dev/urandom of=/dev/"$partition" bs=1M status=progress || true
 done
 
-# Additional security measures
-echo "Clearing inodes and file system journals..."
-find / -type f -exec chattr +s {} \;
-find / -type f -exec wipe -q -Q 3 -f {} \;
-
-echo "Clearing memory..."
+# Clear RAM caches
+echo "Clearing RAM caches..."
 sync
 echo 3 > /proc/sys/vm/drop_caches
-swapoff -a && swapon -a
 
-# Sync and reboot
+# Additional security measures (attempting to clear file system metadata)
+echo "Clearing inodes and file system journals..."
+find / -xdev -type f 2>/dev/null | while read -r file; do
+    chattr +s "$file" 2>/dev/null || true
+    wipe -q -Q 3 -f "$file" 2>/dev/null || true
+done
+
 sync
-echo "System destruction complete. Rebooting now..."
+echo "SYSTEM DESTRUCTION COMPLETE. ALL DATA HAS BEEN SECURELY AND IRREVERSIBLY DELETED."
+echo "Rebooting now..."
 reboot

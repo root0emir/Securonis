@@ -1,25 +1,28 @@
 #!/bin/bash
 
+# WARNING: THIS WILL DISABLE THE PARANOIA MODE AND RESTORE NORMAL SYSTEM FUNCTIONALITY.
+
+set -e
+
+# Function to check if Paranoia Mode is enabled
 is_paranoia_mode_enabled() {
-    if [ -f /etc/sysctl.d/999-paranoia-mode.conf ] && iptables -L INPUT | grep -q "DROP"; then
+    if [ -f /etc/sysctl.d/999-paranoia-mode.conf ] && nft list ruleset | grep -q "drop"; then
         return 0
     else
         return 1
     fi
 }
 
+# Disable Paranoia Mode
 disable_paranoia_mode() {
-    if $(is_paranoia_mode_enabled); then
+    if is_paranoia_mode_enabled; then
         echo "[!] Disabling Paranoia Mode..."
 
-        # Flush all iptables rules
-        sudo iptables -F
-        sudo iptables -P INPUT ACCEPT
-        sudo iptables -P FORWARD ACCEPT
-        sudo iptables -P OUTPUT ACCEPT
+        # Flush all nftables rules
+        sudo nft flush ruleset
 
-        # Remove saved iptables rules
-        sudo rm -f /etc/iptables/rules.v4
+        # Remove saved nftables rules
+        sudo rm -f /etc/nftables.conf
 
         # Remove kernel hardening settings
         sudo rm -f /etc/sysctl.d/999-paranoia-mode.conf
@@ -50,5 +53,5 @@ disable_paranoia_mode() {
     fi
 }
 
-# Test the function
+# Main execution
 disable_paranoia_mode
