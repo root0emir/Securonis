@@ -27,7 +27,7 @@ https://securonis.sourceforge.io
 ![Ekran görüntüsü 2025-04-01 231936](https://github.com/user-attachments/assets/01f510b1-b5dd-4c10-8133-6266e93c4f70)
 ![Ekran görüntüsü 2025-04-01 231923](https://github.com/user-attachments/assets/33222cbf-6e90-4fd2-894b-dd72748038c6)
 
-# New Future : System Control Panel , GUI Crpted Notes , GUI Password Manager and more! Securonis Linux is Coming 💪
+# New Future : System Control Panel , GUI Crypted Notes , GUI Password Manager and more! Securonis Linux is Coming 💪
 
 ![Ekran görüntüsü 2025-04-02 211857](https://github.com/user-attachments/assets/1b00f927-beb6-4011-8376-5e4fd0d1a1f9)
 
