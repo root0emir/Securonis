@@ -103,5 +103,16 @@ New Config: Firefox has now been made much more secure with its tweaks
 Privacy and Security tests V2 completed ✓ 
 
 
+Securonis Linux 2.0 Beta
+
+Lots of bug fixes and additional improvements
+
+New Future: ProtonVPN
+New Future: I2P Router 
+
+New Wallpapers , New Theme 
+
+New Future: Seconionis - Tor Transparent Proxy Traffic Router 
+
 
 
