@@ -1,10 +1,18 @@
 # Securonis
 
-![sec](https://github.com/user-attachments/assets/bcbf9490-829a-4592-9c3a-a2aafa491471)
+https://securonis.github.io/
+
 
 https://sourceforge.net/projects/securonis/
 
-https://securonis.sourceforge.io
+
+Source Code Moved to: https://github.com/Securonis
+
+![sec](https://github.com/user-attachments/assets/bcbf9490-829a-4592-9c3a-a2aafa491471)
+
+
+
+
 
 # Securonis Linux 1.8 Beta 
 
